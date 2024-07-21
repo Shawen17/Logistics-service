@@ -27,3 +27,4 @@ __pycache__/
 api.orders/.pytest_cache
 *__pycache__/
 
+.env

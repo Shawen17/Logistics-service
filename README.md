@@ -87,21 +87,21 @@ NOTE: Make sure the api-orders container is running before using the command abo
 
 ### Step 1: Webapp
 
-Created Product directory at src/components/Product with Product.tsx, Product.test.tsx, Product.style.tsx, Product.stories.tsx, and ProductImg.tsx files. The Product.style.tsx contained styled-components for the Product component.
+Created Product directory at src/components/Product with Product.tsx, Product.test.tsx, Product.style.tsx, Product.stories.tsx, and ProductImg.tsx files. The Product.style.tsx contains styled-components for the Product component.
 
-Developed the Product component that will take product props from the backend active product data, and display the product image, name, and id.
+Developed the Product component that will take product object as props and display the product image, name, and id.
 
-I implemented the Product component the ProductPage.tsx at `webapp/src/pages/ProductsPage/ProductsPage.tsx`, where all active product data are mapped. The frontend is served with nginx server as configured in the Dockerfile and nginx.conf files.
+I implemented the Product component in ProductPage.tsx at `webapp/src/pages/ProductsPage/ProductsPage.tsx`, where all active product data are mapped. The frontend is served with nginx as configured in the Dockerfile and nginx.conf files.
 
 ### Step 2: api.products
 
-I developed the endpoint `/api/products` to return the json objects of all active products required by the Product page. The base directory contains a Dockerfile to build the image for the backend application to run as a container in a micro-service development approach. The backend is also served with nginx as configured in the nginx.conf file.
+I developed the endpoint `/api/products` to return the json objects of all active products required by the Product page. The base directory contains a Dockerfile to build the image for the backend application to run as a container in a micro-service development approach. The backend is also served with nginx as configured in the nginx.conf file. test_product.py was also developed to test the `api/products/*` endpoints using pytest within the running container with the command discussed above.
 
 ### Step 3: mariadb
 
-- To make sure the backend connects to the mariadb when the backend app initializes, the function connect_to_db() runs to give the backend five reconnection attempts and sleep time incase the mariadb container isn't ready for connection.
+- To ensure the backend connects to MariaDB when the application initializes, the `connect_to_db()` function provides five reconnection attempts and incorporates a delay between attempts in case the MariaDB container isn't ready for connection.
 
-- To replace the t in the ProductPhotoURL column with real image urls, a function execute_image_url_injection(list_of_image_urls) was used with a parameter which contains a list of five image urls. This function runs on initialization of the backend service after the execute_sql_file(data.sql) function which implements the database Table, Schema and mock data runs.
+- To replace the placeholder 't' in the `ProductPhotoURL` column with actual image URLs, the `execute_image_url_injection(list_of_image_urls)` function is used, which takes a list of five image URLs as a parameter. This function runs during the backend service initialization, following the execution of the `execute_sql_file(data.sql)` function, which sets up the database table, schema, and mock data.
 
 The database has the following schema:
 
