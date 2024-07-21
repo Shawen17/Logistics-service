@@ -37,7 +37,7 @@ docker build -t api-orders:latest .
 
 ### Starting the application
 
-To start application run the following command from the root directory
+To start the application, add the provided `.env` file to the root directory of the project. This file contains the environment variables needed by the `docker-compose` file. Then, run the following command.
 
 ```Bash
 docker compose up -d
@@ -87,15 +87,15 @@ NOTE: Make sure the api-orders container is running before using the command abo
 
 ### Step 1: Webapp
 
-Created Product directory at src/components/Product with Product.tsx, Product.test.tsx, Product.style.tsx, Product.stories.tsx, and ProductImg.tsx files. The Product.style.tsx contains styled-components for the Product component.
+Created a `Product` directory at `src/components/Product`, containing the files: `Product.tsx`, `Product.test.tsx`, `Product.style.tsx`, `Product.stories.tsx`, and `ProductImg.tsx`. The `Product.style.tsx` file includes styled-components for the `Product` component.
 
-Developed the Product component that will take product object as props and display the product image, name, and id.
+Developed the `Product` component to accept a product object as props and display the product image, name, and ID.
 
-I implemented the Product component in ProductPage.tsx at `webapp/src/pages/ProductsPage/ProductsPage.tsx`, where all active product data are mapped. The frontend is served with nginx as configured in the Dockerfile and nginx.conf files.
+Implemented the `Product` component in `ProductsPage.tsx` at `webapp/src/pages/ProductsPage/ProductsPage.tsx`, where all active product data are mapped. The frontend is served with Nginx as configured in the `Dockerfile` and `nginx.conf` files.
 
 ### Step 2: api.products
 
-I developed the endpoint `/api/products` to return the json objects of all active products required by the Product page. The base directory contains a Dockerfile to build the image for the backend application to run as a container in a micro-service development approach. The backend is also served with nginx as configured in the nginx.conf file. test_product.py was also developed to test the `api/products/*` endpoints using pytest within the running container with the command discussed above.
+I developed the endpoint `/api/products` to return JSON objects of all active products needed by the Product page. The base directory includes a `Dockerfile` to build the image for the backend application, allowing it to run as a container in a microservice development approach. The backend is served with Nginx as configured in the `nginx.conf` file. Additionally, `test_product.py` was created to test the `api/products/*` endpoints using pytest within the running container, utilizing the command mentioned above.
 
 ### Step 3: mariadb
 
@@ -149,7 +149,3 @@ MariaDB [marz]> select * from Product;
 +-----------+-------------+-----------------+---------------+
 5 rows in set (0.00 sec)
 ```
-
-## Submission
-
-To submit the solution please email `aadeyeye@marzvfx.com` with a link to your github repo with the implemented task. For the email subject please specify your full name (first and last name) as well as the roll you are applying for
