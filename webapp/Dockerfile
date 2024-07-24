@@ -11,13 +11,13 @@ ENV PATH /webapp/node_modules/.bin:$PATH
 COPY package.json ./
 
 # Install project dependencies
-RUN yarn install
+RUN npm install
 
 # Copy the entire project to the working directory
 COPY . .
 
 # Build the app
-RUN yarn build
+RUN npm run build
 
 # Second stage: Serve the React app with Nginx
 FROM nginx:1.15
