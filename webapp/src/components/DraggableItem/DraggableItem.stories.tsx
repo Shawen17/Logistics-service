@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import type { DraggableProvided } from 'react-beautiful-dnd';
-import { Order } from '../interfaces';
+// import { Order } from '../interfaces';
 import DraggableItem from './DraggableItem';
 
 export default {
@@ -18,15 +18,15 @@ const draggableProvided: DraggableProvided = ({
         'data-rbd-draggable-id': '1',
     },
     dragHandleProps: null,
-}); 
+});
 
 const getArgs = (OrderStatus: string) => ({
     OrderID: 1234,
     CustomerID: 2345,
     ProductID: 3456,
-    OrderStatus, 
+    OrderStatus,
     draggableProvided,
-    removeOrder: (order: Order) => {},
+    removeOrder: () => {},
 });
 
 export const NotInQA = Template.bind({});

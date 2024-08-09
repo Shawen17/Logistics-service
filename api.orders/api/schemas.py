@@ -31,3 +31,17 @@ class ProductSchema(Schema):
     @pre_load
     def make_object(self, data, **kwargs):
         return data
+
+
+class CustomerSchema(Schema):
+    CustomerID = fields.Int()
+    CustomerFirstName = fields.String()
+    CustomerLastName = fields.String()
+    CustomerEmail = fields.String()
+    CustomerPassword = fields.String()
+    CustomerNumber = fields.String()
+    Active = fields.Boolean()
+
+    @pre_load
+    def make_object(self, data, **kwargs):
+        return data

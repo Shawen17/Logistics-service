@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import DraggableList from "../../components/DraggableList/DraggableList";
 import Spinner from "../../components/Spinner/Spinner";
 import { Order, OrderData } from "../../components/interfaces";
@@ -57,7 +57,7 @@ const HomePage = () => {
     setLoadingState(DATA_STATES.loaded);
   };
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
     const sourceKey = ID_LIST_MAP[

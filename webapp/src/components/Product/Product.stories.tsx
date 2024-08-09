@@ -1,3 +1,4 @@
+import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Product from "./Product";
 import { ProductProps } from "../interfaces";

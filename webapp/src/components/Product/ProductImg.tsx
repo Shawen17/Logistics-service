@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 import {
   LazyLoadImage,
   LazyLoadImageProps,
   Effect,
-} from "react-lazy-load-image-component";
+} from 'react-lazy-load-image-component';
 
 interface ProductImgProps extends LazyLoadImageProps {
   effect?: Effect;

@@ -61,7 +61,7 @@ describe("HomePage", () => {
                 <HomePage />
             </MemoryRouter>
         );
-        
+
         await waitFor(() => {
             expect(screen.getByTestId(`error-container`)).toBeInTheDocument();
         });

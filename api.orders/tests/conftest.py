@@ -6,15 +6,17 @@ from api.models import Customer, Product, Orders
 
 _TABLES = (Customer, Product, Orders)
 
+
 @fixture()
 def test_db():
-    db = SqliteDatabase(':memory:')
+    db = SqliteDatabase(":memory:")
     with db.bind_ctx(_TABLES):
         db.create_tables(_TABLES)
         try:
             yield db
         finally:
             db.drop_tables(_TABLES)
+
 
 @fixture()
 def test_app(test_db):
@@ -30,7 +32,9 @@ def test_app(test_db):
     #     return response
     # app.after_request(after_request)
 
-    app.config.update({
-        "TESTING": True,
-    })
+    app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
     yield app

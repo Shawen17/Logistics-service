@@ -14,12 +14,12 @@ describe('DraggableItem', () => {
             'data-rbd-draggable-id': '1',
         },
         dragHandleProps: null,
-    }); 
+    });
     const props = {
       OrderID: 1234,
       CustomerID: 2345,
       ProductID: 3456,
-      OrderStatus: 'QA', 
+      OrderStatus: 'QA',
       draggableProvided,
       removeOrder: () => {},
   };

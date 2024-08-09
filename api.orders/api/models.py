@@ -1,7 +1,10 @@
 import os
 from dotenv import load_dotenv
-from peewee import Model, IntegerField, CharField, ForeignKeyField, Field
+from peewee import Model, IntegerField, CharField, ForeignKeyField, Field, BooleanField
 from playhouse.mysql_ext import MariaDBConnectorDatabase
+import re
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 load_dotenv()
 
@@ -27,6 +30,17 @@ ORDER_STATUSES = {
 
 PRODUCT_STATUSES_SET = set(PRODUCT_STATUSES.values())
 ORDER_STATUSES_SET = set(ORDER_STATUSES.values())
+
+
+class EmailField(CharField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def db_value(self, value):
+        # Perform email validation
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+            raise ValueError(f"Invalid email address: {value}")
+        return value
 
 
 class EnumField(Field):
@@ -55,9 +69,32 @@ class Customer(BaseModel):
     CustomerID = IntegerField(primary_key=True, null=False)
     CustomerFirstName = CharField(100, null=False)
     CustomerLastName = CharField(100, null=False)
+    CustomerEmail = EmailField(255, null=False)
+    CustomerPassword = CharField(255, null=False)
+    CustomerNumber = CharField(255, null=False)
+    Active = BooleanField(default=True)
 
     class Meta:
         table_name = "Customer"
+
+    def save(self, *args, **kwargs):
+        if self.CustomerPassword and not self.CustomerPassword.startswith(
+            "pbkdf2:sha256"
+        ):
+            self.CustomerPassword = generate_password_hash(self.CustomerPassword)
+        return super(Customer, self).save(*args, **kwargs)
+
+    @classmethod
+    def validate_login(cls, email, password):
+        try:
+            customer = cls.get(cls.CustomerEmail == email)
+        except cls.DoesNotExist:
+            return None, "Invalid email or password"
+
+        if check_password_hash(customer.CustomerPassword, password):
+            return customer, None
+        else:
+            return None, "Invalid email or password"
 
 
 class Product(BaseModel):

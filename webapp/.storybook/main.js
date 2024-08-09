@@ -1,6 +1,13 @@
-const path = require('path');
+import path from "path"
+import postcss from 'postcss';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+
+// Simulate __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   "stories": [
     "../src/**/*.stories.mdx",
     "../src/**/*.stories.@(js|jsx|ts|tsx)"
@@ -22,7 +29,7 @@ module.exports = {
       use: [
         {
           loader: "postcss-loader",
-          options: { implementation: require.resolve("postcss") },
+          options: { implementation: postcss },
         },
       ],
       include: path.resolve(__dirname, "../"),

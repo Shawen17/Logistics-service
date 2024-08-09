@@ -1,3 +1,4 @@
+import React from "react";
 import PageWrapper from "../PageWrapper";
 import Product from "../../components/Product/Product";
 import { ProductItemProps } from "../../components/interfaces";

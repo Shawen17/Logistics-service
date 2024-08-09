@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import DraggableList from './DraggableList';
-import { Order } from '../interfaces';
+// import { Order } from '../interfaces';
 
 export default {
     title: 'Draggable List',
@@ -18,7 +18,7 @@ const Template: ComponentStory<typeof DraggableList> = (args) => (
 const getArgs = (OrderStatus: string) => ({
     ID: '12345',
     listTitle: 'Test List',
-    removeOrder: (order: Order) => {},
+    removeOrder: () => {},
     items: [
         { OrderID: 1234, CustomerID: 1234, ProductID: 123456, OrderStatus },
         { OrderID: 1235, CustomerID: 1235, ProductID: 123456, OrderStatus },

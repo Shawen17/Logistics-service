@@ -10,7 +10,7 @@ const Header = (props: HeaderProps) => {
             data-testid="header-container-div"
         >
             <MainIcon data-testid="main-icon" />
-            <div> 
+            <div>
                 {
                     props.links.map(
                         (headerLink, index) => {

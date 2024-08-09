@@ -18,3 +18,6 @@ Werkzeug==2.2.3
 zipp==3.13.0
 python-dotenv
 flask-cors
+pyjwt
+pillow
+prometheus-client

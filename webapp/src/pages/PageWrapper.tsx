@@ -8,6 +8,7 @@ interface PageWrapperProps {
 const links = [
   { label: "Home", url: "/" },
   { label: "Products", url: "/products" },
+  { label: "Login", url: "/login" },
 ];
 
 const PageWrapper = (props: PageWrapperProps) => (

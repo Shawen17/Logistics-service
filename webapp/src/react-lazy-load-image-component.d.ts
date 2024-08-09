@@ -1,6 +1,6 @@
 declare module 'react-lazy-load-image-component' {
     import * as React from 'react';
-  
+
     export interface LazyLoadImageProps {
       alt?: string;
       height?: string | number;
@@ -17,12 +17,11 @@ declare module 'react-lazy-load-image-component' {
       threshold?: number;
       useIntersectionObserver?: boolean;
       wrapperClassName?: string;
-      onError?: (error: any) => void;
+      onError?: (error: string) => void;
       style?: React.CSSProperties;
     }
-  
+
     export class LazyLoadImage extends React.Component<LazyLoadImageProps> {}
-  
-    export type Effect = 'opacity' | 'blur' | 'black-and-white' | 'grayscale' 
+
+    export type Effect = 'opacity' | 'blur' | 'black-and-white' | 'grayscale'
   }
-  

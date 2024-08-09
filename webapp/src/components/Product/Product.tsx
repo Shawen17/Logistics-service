@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { ProductProps } from "../interfaces";
-import { Circle, ProductContainer, Details, LikeIcon } from "./Product.style";
-import ProductImg from "./ProductImg";
-import { pink } from "@mui/material/colors";
+import React, { useState } from 'react';
+import { ProductProps } from '../interfaces';
+import { Circle, ProductContainer, Details, LikeIcon } from './Product.style';
+import ProductImg from './ProductImg';
+import { pink } from '@mui/material/colors';
 
 interface ProductDetailsModalProps {
   product: ProductProps;

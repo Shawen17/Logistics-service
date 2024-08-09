@@ -17,6 +17,17 @@ services:
     networks:
       - app_network
 
+  metrics-server:
+    image: metrics-server:latest
+    container_name: metrics-server
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile.metrics
+    ports:
+      - 3002:3002
+    networks:
+      - app_network
+
   api-orders:
     image: api-orders:latest
     container_name: api-orders
@@ -37,7 +48,7 @@ services:
       MYSQL_PORT: 3306
     networks:
       - app_network
-  
+
   mariadb:
     image: mariadb:10.2
     container_name: mariadb
@@ -55,11 +66,57 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p changeme"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  mysqld_exporter:
+    image: quay.io/prometheus/mysqld-exporter
+    container_name: mysqld_exporter
+    environment:
+      - DATA_SOURCE_NAME=monitoring_user:${MYSQL_PASSWORD}@tcp(mariadb:3306)/
+    ports:
+      - 9104:9104
+    volumes:
+      - ./.my.cnf:/etc/mysql/.my.cnf
+    command: ["--config.my-cnf=/etc/mysql/.my.cnf"]
+    networks:
+      - app_network
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    networks:
+      - app_network
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    ports:
+      - 9090:9090
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3001:3000
+    networks:
+      - app_network
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+
+volumes:
+  grafana-storage:
 
 networks:
   app_network:

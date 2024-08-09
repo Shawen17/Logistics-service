@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react'
 import { DragDropContext } from 'react-beautiful-dnd';
 import DraggableList from './DraggableList';
-import { Order } from '../interfaces';
+// import { Order } from '../interfaces';
 
 describe('DraggableList', () => {
     it('rendersDraggableList', async () => {
@@ -10,7 +10,7 @@ describe('DraggableList', () => {
         const props = {
             ID,
             listTitle: 'Test List',
-            removeOrder: (order: Order) => {},
+            removeOrder: () => {},
             items: [
                 { OrderID: 1234, CustomerID: 1234, ProductID: 123456, OrderStatus: 'InProgress' },
                 { OrderID: 1235, CustomerID: 1235, ProductID: 123456, OrderStatus: 'InProgress' },

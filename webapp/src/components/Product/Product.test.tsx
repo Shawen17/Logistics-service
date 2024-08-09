@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Product from "./Product";
 import { ProductProps } from "../interfaces";
