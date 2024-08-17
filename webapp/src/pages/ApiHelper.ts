@@ -132,7 +132,7 @@ const updateOrderStatus = async (order: Order, newOrderStatus: string) => {
     const updatedOrder = { ...order, OrderStatus: newOrderStatus };
     let orderStatusUpdated = false;
     try {
-        const response = await axios.post(UPDATE_STATUS_URL, updatedOrder);
+        const response = await axios.put(UPDATE_STATUS_URL, updatedOrder);
         if (response?.status === 200) orderStatusUpdated = true;
         else {
             const { message } = response.data;

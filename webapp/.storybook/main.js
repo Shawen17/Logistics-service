@@ -1,40 +1,30 @@
-import path from "path"
-import postcss from 'postcss';
-import { fileURLToPath } from 'url';
+const path = require('path');
 
-
-// Simulate __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export default {
-  "stories": [
-    "../src/**/*.stories.mdx",
-    "../src/**/*.stories.@(js|jsx|ts|tsx)"
+module.exports = {
+  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@storybook/preset-create-react-app',
+    'storybook-addon-mock',
   ],
-  "addons": [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "@storybook/preset-create-react-app",
-    'storybook-addon-mock'
-  ],
-  "framework": "@storybook/react",
-  "core": {
-    "builder": "@storybook/builder-webpack5"
+  framework: '@storybook/react',
+  core: {
+    builder: '@storybook/builder-webpack5',
   },
-  "webpackFinal": async (config) => {
+  webpackFinal: async (config) => {
     config.module.rules.push({
       test: /\.css$/i,
       use: [
         {
-          loader: "postcss-loader",
-          options: { implementation: postcss },
+          loader: 'postcss-loader',
+          options: { implementation: require.resolve('postcss') },
         },
       ],
-      include: path.resolve(__dirname, "../"),
+      include: path.resolve(__dirname, '../'),
     });
     // Return the altered config
     return config;
   },
-}
+};

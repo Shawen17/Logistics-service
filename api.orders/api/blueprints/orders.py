@@ -45,8 +45,11 @@ def post_update_order_status():
     try:
         order = order_schema.load(json_data)
         Orders.update(**order).where(Orders.OrderID == order["OrderID"]).execute()
+
     except ValidationError as err:
         return {"message": err.messages}, 422
     except Exception as err:
         return {"message": str(err)}, 500
-    return {"message": f'{order["OrderID"]} updated successfully!'}, 200
+    return {
+        "message": f'{order["OrderID"]} updated successfully!',
+    }, 200

@@ -1,28 +1,28 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import DraggableList from "../../components/DraggableList/DraggableList";
-import Spinner from "../../components/Spinner/Spinner";
-import { Order, OrderData } from "../../components/interfaces";
-import { getInPipelineData, updateOrderStatus } from "../ApiHelper";
-import PageWrapper from "../PageWrapper";
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import DraggableList from '../../components/DraggableList/DraggableList';
+import Spinner from '../../components/Spinner/Spinner';
+import { Order, OrderData } from '../../components/interfaces';
+import { getInPipelineData, updateOrderStatus } from '../ApiHelper';
+import PageWrapper from '../PageWrapper';
 
 export const DATA_STATES = {
-  waiting: "WAITING",
-  loaded: "LOADED",
-  error: "ERROR",
+  waiting: 'WAITING',
+  loaded: 'LOADED',
+  error: 'ERROR',
 };
 
 interface IdList {
-  "0": string;
-  "1": string;
-  "2": string;
+  '0': string;
+  '1': string;
+  '2': string;
 }
 
 const ID_LIST_MAP: IdList = {
-  "0": "Queued",
-  "1": "InProgress",
-  "2": "QA",
+  '0': 'Queued',
+  '1': 'InProgress',
+  '2': 'QA',
 };
 
 const HomePage = () => {
@@ -32,6 +32,7 @@ const HomePage = () => {
     InProgress: [],
     QA: [],
   } as OrderData);
+  const [updated, setUpdated] = useState(false);
 
   const getOrders = async () => {
     setLoadingState(DATA_STATES.waiting);
@@ -40,10 +41,10 @@ const HomePage = () => {
     setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
   };
 
-  const updateOrder = async (order: Order) => {
+  const confirmOrder = async (order: Order): Promise<boolean> => {
     setLoadingState(DATA_STATES.waiting);
     const newOrderStatus =
-      order.OrderStatus === "QA" ? "Complete" : "Cancelled";
+      order.OrderStatus === 'QA' ? 'Complete' : 'Cancelled';
     const orderStatusUpdated = await updateOrderStatus(order, newOrderStatus);
     if (orderStatusUpdated) {
       const columnKey = order.OrderStatus as keyof OrderData;
@@ -53,11 +54,28 @@ const HomePage = () => {
           (otherOrder: Order) => otherOrder.OrderID !== order.OrderID
         ),
       });
+      setLoadingState(DATA_STATES.loaded);
+      return true;
     }
+
     setLoadingState(DATA_STATES.loaded);
+    return false;
   };
 
-  const handleDragEnd = (result: DropResult) => {
+  const updateOrder = async (order: Order): Promise<boolean> => {
+    setLoadingState(DATA_STATES.waiting);
+    const newOrderStatus = order.OrderStatus;
+    const orderStatusUpdated = await updateOrderStatus(order, newOrderStatus);
+    if (orderStatusUpdated) {
+      setUpdated(!updated);
+      setLoadingState(DATA_STATES.loaded);
+      return true;
+    }
+    setLoadingState(DATA_STATES.loaded);
+    return false;
+  };
+
+  const handleDragEnd = async (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
     const sourceKey = ID_LIST_MAP[
@@ -74,6 +92,10 @@ const HomePage = () => {
       const sourceClone = Array.from(data[sourceKey]);
       const [removed] = sourceClone.splice(sourceIndex, 1);
       sourceClone.splice(destIndex, 0, removed);
+      const updateResult = await updateOrder(removed);
+      if (!updateResult) {
+        console.error('Failed to update order status in the database');
+      }
       setData({ ...data, [sourceKey]: sourceClone });
     } else {
       const sourceClone = Array.from(data[sourceKey]);
@@ -81,6 +103,10 @@ const HomePage = () => {
       const [removed] = sourceClone.splice(sourceIndex, 1);
       destClone.splice(destIndex, 0, removed);
       destClone[destIndex].OrderStatus = destKey;
+      const updateResult = await updateOrder(removed);
+      if (!updateResult) {
+        console.error('Failed to update order status in the database');
+      }
       setData({
         ...data,
         [sourceKey]: sourceClone,
@@ -91,7 +117,7 @@ const HomePage = () => {
 
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [updated]);
 
   let content;
   if (loadingState === DATA_STATES.waiting)
@@ -113,19 +139,19 @@ const HomePage = () => {
           <DraggableList
             ID="0"
             listTitle="Queued"
-            removeOrder={(order: Order) => updateOrder(order)}
+            removeOrder={(order: Order) => confirmOrder(order)}
             items={data.Queued}
           />
           <DraggableList
             ID="1"
             listTitle="In Progess"
-            removeOrder={(order: Order) => updateOrder(order)}
+            removeOrder={(order: Order) => confirmOrder(order)}
             items={data.InProgress}
           />
           <DraggableList
             ID="2"
             listTitle="QA"
-            removeOrder={(order: Order) => updateOrder(order)}
+            removeOrder={(order: Order) => confirmOrder(order)}
             items={data.QA}
           />
         </DragDropContext>

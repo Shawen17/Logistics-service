@@ -19,4 +19,8 @@ image_urls = [
         "id": 5,
         "photo": "https://pngimg.com/uploads/coat/coat_PNG4.png",
     },
+    {
+        "id": 6,
+        "photo": "https://img.freepik.com/free-photo/smart-tv-screen-with-copy-space-wooden-table_53876-102019.jpg",
+    },
 ]

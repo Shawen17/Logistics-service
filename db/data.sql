@@ -36,6 +36,7 @@ CREATE TABLE `Product` (
   `ProductID` int(11) NOT NULL AUTO_INCREMENT,
   `ProductName` varchar(100) NOT NULL,
   `ProductPhotoURL` varchar(255) NOT NULL,
+  `ProductCategory` varchar(100) NOT NULL,
   `ProductStatus` enum('Active','InActive') DEFAULT NULL,
   PRIMARY KEY (`ProductID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
@@ -43,9 +44,11 @@ CREATE TABLE `Product` (
 
 LOCK TABLES `Product` WRITE;
 /*!40000 ALTER TABLE `Product` DISABLE KEYS */;
-INSERT INTO `Product` VALUES (1,'Hat','t','Active'),(2,'Shoes','t','Active'),(3,'Pants','t','Active'),(4,'Shirt','t','InActive'),(5,'Coat','t','InActive');
+INSERT INTO `Product` VALUES (1,'Hat','t', 'fashion', 'Active'),(2,'Shoes','t','fashion', 'Active'),(3,'Pants','t', 'fashion', 'Active'),(4,'Shirt','t', 'fashion', 'InActive'),(5,'Coat','t', 'fashion', 'InActive'), (6,'Television','t', 'electronics', 'Active');
 /*!40000 ALTER TABLE `Product` ENABLE KEYS */;
 UNLOCK TABLES;
+
+CREATE FULLTEXT INDEX idx_full_products ON Product (ProductName, ProductCategory);
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
