@@ -92,10 +92,6 @@ const HomePage = () => {
       const sourceClone = Array.from(data[sourceKey]);
       const [removed] = sourceClone.splice(sourceIndex, 1);
       sourceClone.splice(destIndex, 0, removed);
-      const updateResult = await updateOrder(removed);
-      if (!updateResult) {
-        console.error('Failed to update order status in the database');
-      }
       setData({ ...data, [sourceKey]: sourceClone });
     } else {
       const sourceClone = Array.from(data[sourceKey]);
