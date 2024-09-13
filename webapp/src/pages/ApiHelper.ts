@@ -2,33 +2,36 @@ import axios from "axios";
 import { Order, OrderData} from "../components/interfaces";
 
 
-const PRODUCT_URL = '/api/products/'
+const PRODUCT_URL = '/api/products/';
 const INPIPELINE_URL = '/api/orders/inpipeline';
 const UPDATE_STATUS_URL = '/api/orders/update_status';
-const LOGIN_URL = 'api/users/login'
-const SIGNUP_URL = "api/users/register"
+const LOGIN_URL = '/api/users/login';
+const SIGNUP_URL = "/api/users/register";
+
+const apiClient = axios.create({
+  baseURL:"http://api-orders:5001",
+  headers: {
+    "Content-Type": "application/json",
+  }
+});
 
 
 
 export const signup = async(CustomerEmail:string,CustomerPassword:string,CustomerFirstName:string,CustomerLastName:string,CustomerNumber:string)=>{
 
-  const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+  
     let errorOccured = false
     let signupMessage
-    const body = JSON.stringify({CustomerEmail , CustomerPassword, CustomerFirstName, CustomerLastName, CustomerNumber });
-
+    const body = JSON.stringify({ CustomerFirstName, CustomerLastName,CustomerEmail ,CustomerPassword,  CustomerNumber });
+    
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         SIGNUP_URL,
         body,
-        config
+        
       );
 
-      if (response?.status === 200) {
+      if (response?.status === 20) {
 
         signupMessage = response.data.message;
 
@@ -37,8 +40,12 @@ export const signup = async(CustomerEmail:string,CustomerPassword:string,Custome
          const message  = response.data.message;
          throw message;
        }
-     } catch(err) {
-       console.error(err);
+     } catch(err:unknown) {
+      if (err instanceof Error) {
+        console.log(err.message); 
+      } else {
+        console.log("An unknown error occurred");
+      }
        errorOccured = true;
      }
      return {signupMessage, errorOccured }

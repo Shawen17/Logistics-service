@@ -5,6 +5,7 @@ from api.schemas import CustomerSchema
 import jwt
 import os
 from dotenv import load_dotenv
+import logging
 
 
 load_dotenv()
@@ -19,7 +20,7 @@ customer_schema = CustomerSchema()
 def add_user():
     try:
         json_data = request.get_json()
-
+        logging.info(json_data)
         if not json_data:
             return {
                 "message": "Please provide user details",
@@ -32,7 +33,6 @@ def add_user():
         customer = Customer.create(**validated)
         user = customer_schema.dump(customer)
 
-        print(user)
         if not user:
             return {
                 "message": "User already exists",
@@ -41,6 +41,7 @@ def add_user():
             }, 409
         return {"message": "Successfully created new user", "data": user}, 201
     except Exception as e:
+        logging.error(str(e))
         return {"message": "Something went wrong", "error": str(e), "data": None}, 500
 
 

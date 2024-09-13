@@ -9,7 +9,7 @@ import {
   PasswordIcon,
 } from './LoginForm.style';
 import { login } from '../../pages/ApiHelper';
-import { DATA_STATES } from '../../pages/HomePage/HomePage';
+import { DATA_STATES } from '../../pages/KanbanBoard/KanbanBoard';
 import { useHistory, Link } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 
@@ -21,11 +21,10 @@ export interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
-  const [inputValues, setValues] =
-    useState<{
-      CustomerEmail?: string;
-      CustomerPassword?: string;
-    }>(initialValues);
+  const [inputValues, setValues] = useState<{
+    CustomerEmail?: string;
+    CustomerPassword?: string;
+  }>(initialValues);
   const [emailFocus, setEmailFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [loadingState, setLoadingState] = useState(DATA_STATES.loaded);

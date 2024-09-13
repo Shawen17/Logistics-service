@@ -1,11 +1,11 @@
-import React from "react";
-import PageWrapper from "../PageWrapper";
-import Product from "../../components/Product/Product";
-import { ProductItemProps } from "../../components/interfaces";
-import { useState, useEffect } from "react";
-import { DATA_STATES } from "../HomePage/HomePage";
-import { getAllProducts } from "../ApiHelper";
-import Spinner from "../../components/Spinner/Spinner";
+import React from 'react';
+import PageWrapper from '../PageWrapper';
+import Product from '../../components/Product/Product';
+import { ProductItemProps } from '../../components/interfaces';
+import { useState, useEffect } from 'react';
+import { DATA_STATES } from '../KanbanBoard/KanbanBoard';
+import { getAllProducts } from '../ApiHelper';
+import Spinner from '../../components/Spinner/Spinner';
 
 const ProductsPage = () => {
   const [loadingState, setLoadingState] = useState(DATA_STATES.waiting);
@@ -13,9 +13,9 @@ const ProductsPage = () => {
     items: [
       {
         ProductID: 0,
-        ProductName: "",
-        ProductPhotoURL: "",
-        ProductStatus: "Active",
+        ProductName: '',
+        ProductPhotoURL: '',
+        ProductStatus: 'Active',
       },
     ],
   });

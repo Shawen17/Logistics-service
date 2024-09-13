@@ -9,7 +9,7 @@ import {
   PasswordIcon,
 } from '../LoginForm/LoginForm.style';
 import { signup } from '../../pages/ApiHelper';
-import { DATA_STATES } from '../../pages/HomePage/HomePage';
+import { DATA_STATES } from '../../pages/KanbanBoard/KanbanBoard';
 import { useHistory, Link } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 
@@ -25,15 +25,14 @@ export interface SignupFormProps {
 }
 
 const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
-  const [inputValues, setValues] =
-    useState<{
-      CustomerFirstName?: string;
-      CustomerLastName?: string;
-      CustomerEmail?: string;
-      CustomerNumber?: string;
-      CustomerPassword?: string;
-      ConfirmPassword?: string;
-    }>(initialValues);
+  const [inputValues, setValues] = useState<{
+    CustomerFirstName?: string;
+    CustomerLastName?: string;
+    CustomerEmail?: string;
+    CustomerNumber?: string;
+    CustomerPassword?: string;
+    ConfirmPassword?: string;
+  }>(initialValues);
   const [emailFocus, setEmailFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [loadingState, setLoadingState] = useState(DATA_STATES.loaded);
@@ -81,11 +80,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
     ) {
       if (CustomerPassword === ConfirmPassword) {
         const { signupMessage, errorOccured } = await signup(
+          CustomerEmail,
+          CustomerPassword,
           CustomerFirstName,
           CustomerLastName,
-          CustomerEmail,
-          CustomerNumber,
-          CustomerPassword
+          CustomerNumber
         );
         if (errorOccured) {
           setError(true);
