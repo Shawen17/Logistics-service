@@ -20,7 +20,7 @@ customer_schema = CustomerSchema()
 def add_user():
     try:
         json_data = request.get_json()
-        logging.info(json_data)
+
         if not json_data:
             return {
                 "message": "Please provide user details",

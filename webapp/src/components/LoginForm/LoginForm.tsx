@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import {
   Input,
   Button,
@@ -8,10 +8,12 @@ import {
   SearchContainer,
   PasswordIcon,
 } from './LoginForm.style';
-import { login } from '../../pages/ApiHelper';
 import { DATA_STATES } from '../../pages/KanbanBoard/KanbanBoard';
-import { useHistory, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
+import { login, reset } from '../../action/auth';
+import { connect } from 'react-redux';
+import { RootState } from '../interfaces';
 
 export interface LoginFormProps {
   initialValues?: {
@@ -20,7 +22,14 @@ export interface LoginFormProps {
   };
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
+const LoginForm: React.FC<
+  LoginFormProps & {
+    login: any;
+    reset: any;
+    isAuthenticated: boolean;
+    role: string;
+  }
+> = ({ initialValues = {}, login, reset, isAuthenticated, role }) => {
   const [inputValues, setValues] = useState<{
     CustomerEmail?: string;
     CustomerPassword?: string;
@@ -28,8 +37,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
   const [emailFocus, setEmailFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [loadingState, setLoadingState] = useState(DATA_STATES.loaded);
-  const [error, setError] = useState(false);
-  const history = useHistory();
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (role !== 'user') {
+        navigate('/orders');
+      } else {
+        setError('You are not authorized to view Orders');
+      }
+    }
+  }, [isAuthenticated, role, navigate]);
 
   const HandleFocus =
     (setFocus: React.Dispatch<React.SetStateAction<boolean>>) => () => {
@@ -42,7 +62,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
     };
 
   const HandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setError(false);
+    setError('');
     const name = event.target.name;
     const value = event.target.value;
     setValues((values) => ({ ...values, [name]: value.trim() }));
@@ -50,23 +70,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
 
   const HandleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    reset();
+
     setLoadingState(DATA_STATES.waiting);
     const { CustomerEmail, CustomerPassword } = inputValues;
     if (CustomerEmail && CustomerPassword) {
-      const { loginData, errorOccured } = await login(
-        CustomerEmail,
-        CustomerPassword
-      );
+      const { errorOccured } = await login(CustomerEmail, CustomerPassword);
       if (errorOccured) {
-        setError(true);
-      }
-      setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
-      if (!errorOccured && loginData) {
-        localStorage.setItem('token', loginData.token);
-        history.push('/products');
+        setError('Email or Password Incorrect');
+        setLoadingState(DATA_STATES.error);
+      } else {
+        setLoadingState(DATA_STATES.loaded);
       }
     } else {
-      setError(true);
+      setError('Fill All Details');
       setLoadingState(DATA_STATES.error);
     }
   };
@@ -78,7 +95,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
         <Title className="font-montserrat-uniquifier p-1 mt-1 text-teal-500">
           Welcome! Enter Details
         </Title>
-        {error && <p>Invalid Email or Password</p>}
+        {error && <p className="error-text">{error}</p>}
         <SearchContainer>
           <Input
             placeholder="abc@yahoo.com"
@@ -124,4 +141,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues = {} }) => {
   );
 };
 
-export default LoginForm;
+const mapStateToProps = (state: RootState) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  loginFailed: state.auth.failed,
+  role: state.auth.role,
+});
+
+export default connect(mapStateToProps, { login, reset })(LoginForm);

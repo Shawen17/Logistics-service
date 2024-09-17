@@ -1,9 +1,10 @@
 import MovableItem from '../MovableItem/MovableItem';
-import { Container } from './MovableItemListStyles';
+import { Container, Total } from './MovableItemListStyles';
 
 const MovableItemList = ({
   ID,
   listTitle,
+  total,
   removeOrder,
   moveForward,
   moveBackward,
@@ -11,7 +12,9 @@ const MovableItemList = ({
 }) => {
   return (
     <Container>
-      <h4 className="roboto-thin mb-5">{listTitle}</h4>
+      <h4 className="roboto-thin mb-5">
+        {listTitle} <Total>{total}</Total>
+      </h4>
       {items.length > 0
         ? items.map((item) => {
             return (

@@ -1,11 +1,38 @@
-import type { DraggableProvided } from 'react-beautiful-dnd';
+
 
 export interface Order {
     OrderID: number;
     CustomerID: number;
     ProductID: number;
     OrderStatus: string;
+    Address:string;
+    Products:{};
+    State:string;
+    TreatedBy:string;
+
 }
+
+export interface User {
+  CustomerID: number;
+  CustomerFirstName: string;
+  CustomerLastName: string;
+  CustomerEmail:string;
+  CustomerNumber:string;
+  Active:boolean;
+  Role:string
+}
+
+export interface RootState {
+    auth: {
+      role: string;
+      access:string;
+      isAuthenticated:boolean;
+      user:User | null;
+      failed:boolean
+
+    };
+  }
+
 
 export interface OrderData {
   Queued: Order[],
@@ -13,17 +40,10 @@ export interface OrderData {
   QA: Order[],
 }
 
-export interface DraggableItemProps extends Order{
-    draggableProvided: DraggableProvided;
-    removeOrder: (order: Order) => void;
-}
-
-export interface DraggableListProps {
-    ID: string;
-    listTitle: string;
-    removeOrder: (order: Order) => void;
-    items: Order[];
-};
+export interface PickerOrder {
+    InProgress: Order[],
+    QA: Order[],
+  }
 
 export interface HeaderLink {
     label: string;

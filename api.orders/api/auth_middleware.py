@@ -11,6 +11,7 @@ def token_required(f):
         token = None
         if "Authorization" in request.headers:
             token = request.headers["Authorization"].split(" ")[1]
+
         if not token:
             return {
                 "message": "Authentication Token is missing!",
@@ -21,9 +22,11 @@ def token_required(f):
             data = jwt.decode(
                 token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
             )
-            current_user = Customer.select().where(
+            current_user_query = Customer.select().where(
                 Customer.CustomerID == data["user_id"]
             )
+            current_user = current_user_query.dicts().get()
+
             if current_user is None:
                 return {
                     "message": "Invalid Authentication token!",

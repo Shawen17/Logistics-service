@@ -49,13 +49,14 @@ DROP TABLE IF EXISTS `Orders`;
 CREATE TABLE `Orders` (
   `OrderID` int(11) NOT NULL AUTO_INCREMENT,
   `OrderStatus` enum('Queued','InProgress','QA','Cancelled','Complete') NOT NULL,
-  `ProductID` int(11) NOT NULL,
+  `ProductID` varchar(100) NOT NULL,
   `CustomerID` int(11) NOT NULL,
+  `State` varchar(255) DEFAULT NULL,
+  `Address` varchar(255) DEFAULT NULL,
+  `TreatedBy` varchar(255) DEFAULT NULL, 
   PRIMARY KEY (`OrderID`),
   KEY `CustomerID` (`CustomerID`),
-  KEY `ProductID` (`ProductID`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`CustomerID`) REFERENCES `Customer` (`CustomerID`),
-  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `Product` (`ProductID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -80,6 +81,7 @@ CREATE TABLE `Product` (
   `ProductName` varchar(100) NOT NULL,
   `ProductPhotoURL` varchar(255) NOT NULL,
   `ProductStatus` enum('Active','InActive') DEFAULT NULL,
+  `ProductDesc` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ProductID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

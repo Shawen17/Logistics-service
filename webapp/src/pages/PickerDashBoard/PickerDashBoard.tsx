@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import OrderSheetPage from '../OrderSheetPage/OrderSheetPage';
+import { useEffect, useState } from 'react';
 import MovableItemList from '../../components/MovableItemList/MovableItemList';
-import { updateOrderStatus, getInPipelineData } from '../ApiHelper';
+import {
+  updateOrderStatus,
+  pickerInpipelineOrder,
+  handlePrint,
+} from '../ApiHelper';
 import Spinner from '../../components/Spinner/Spinner';
 import PageWrapper from '../PageWrapper';
-import { Container } from './KanbanBoard.styles';
-import { Order, OrderData } from '../../components/interfaces';
+import { Container } from '../KanbanBoard/KanbanBoard.styles';
+import { Order, PickerOrder } from '../../components/interfaces';
 import { connect } from 'react-redux';
 import { RootState, User } from '../../components/interfaces';
 import { logout } from '../../action/auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
 
 export const DATA_STATES = {
   waiting: 'WAITING',
@@ -19,40 +26,38 @@ interface PickerDashBoardProps {
   user: User | null;
 }
 
-const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
+const PickerDashBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
   user,
   logout,
 }) => {
   const [updated, setUpdated] = useState(false);
   const [loadingState, setLoadingState] = useState(DATA_STATES.waiting);
   const [data, setData] = useState({
-    Queued: [],
     InProgress: [],
     QA: [],
-  } as OrderData);
+  } as PickerOrder);
   const picker = user ? user.CustomerEmail : '';
+  let orderSheetData: Order[] = [...data.InProgress];
 
   const getOrders = async () => {
     setLoadingState(DATA_STATES.waiting);
-    const { orderData, errorOccured } = await getInPipelineData();
+    const { orderData, errorOccured } = await pickerInpipelineOrder(picker);
     setData(orderData);
     setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
-    if (errorOccured) {
-      logout();
-    }
   };
 
   const confirmOrder = async (order: Order): Promise<boolean> => {
     setLoadingState(DATA_STATES.waiting);
     const newOrderStatus =
       order.OrderStatus === 'QA' ? 'Complete' : 'Cancelled';
+
     const orderStatusUpdated = await updateOrderStatus(
       order,
       newOrderStatus,
       picker
     );
     if (orderStatusUpdated) {
-      const columnKey = order.OrderStatus as keyof OrderData;
+      const columnKey = order.OrderStatus as keyof PickerOrder;
       setData({
         ...data,
         [columnKey]: data[columnKey].filter(
@@ -60,11 +65,11 @@ const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
         ),
       });
       setLoadingState(DATA_STATES.loaded);
+      logout();
       return true;
     }
 
     setLoadingState(DATA_STATES.loaded);
-    logout();
     return false;
   };
 
@@ -80,6 +85,7 @@ const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
     } else if (input.OrderStatus === 'InProgress') {
       newOrderStatus = 'QA';
     }
+
     const orderStatusUpdated =
       newOrderStatus &&
       (await updateOrderStatus(input, newOrderStatus, picker));
@@ -101,6 +107,7 @@ const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
     } else if (input.OrderStatus === 'InProgress') {
       newOrderStatus = 'Queued';
     }
+
     const orderStatusUpdated =
       newOrderStatus &&
       (await updateOrderStatus(input, newOrderStatus, picker));
@@ -124,15 +131,6 @@ const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
   else if (loadingState === DATA_STATES.loaded)
     content = (
       <Container data-testid="pipeline-container">
-        <MovableItemList
-          ID="0"
-          listTitle="Queued"
-          total={data.Queued.length}
-          removeOrder={(order: Order) => confirmOrder(order)}
-          moveForward={moveForward}
-          moveBackward={moveBackward}
-          items={data.Queued}
-        />
         <MovableItemList
           ID="1"
           listTitle="In Progess"
@@ -162,8 +160,27 @@ const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
 
   return (
     <PageWrapper>
-      <h1 className="roboto-thin mb-10">ORDERS</h1>
+      <h1 className="roboto-thin mb-5">YOUR ORDERS</h1>
       {content}
+      <h2 className="roboto-thin mb-5">ORDER SHEET</h2>
+
+      {orderSheetData.length > 0 ? (
+        <>
+          {orderSheetData.map((item) => (
+            <OrderSheetPage key={item.OrderID} item={item} />
+          ))}
+        </>
+      ) : (
+        ''
+      )}
+      <button onClick={handlePrint} className="print-button">
+        <FontAwesomeIcon
+          icon={faPrint}
+          style={{
+            color: 'lightgreen',
+          }}
+        />
+      </button>
     </PageWrapper>
   );
 };
@@ -172,4 +189,4 @@ const mapStateToProps = (state: RootState) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { logout })(KanbanBoard);
+export default connect(mapStateToProps, { logout })(PickerDashBoard);

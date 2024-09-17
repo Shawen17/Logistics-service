@@ -1,0 +1,11 @@
+@media print {
+    /* Hide everything except for the content you want to print */
+    .no-print {
+      display: none;
+    }
+  
+    /* Adjust styles for print if needed */
+    .print-button {
+      display: none;
+    }
+  }

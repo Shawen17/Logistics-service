@@ -61,8 +61,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: on-failure
     volumes:
-     - ./db/schema.sql:/docker-entrypoint-initdb.d/1.sql
-     - ./db/data.sql:/docker-entrypoint-initdb.d/2.sql
+      - ./db/data.sql:/docker-entrypoint-initdb.d/1.sql
+      - mariadb_data:/var/lib/mysql
     networks:
       - app_network
     healthcheck:
@@ -87,6 +87,8 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+
+  
 
   prometheus:
     image: prom/prometheus
@@ -117,6 +119,7 @@ services:
 
 volumes:
   grafana-storage:
+  mariadb_data:
 
 networks:
   app_network:

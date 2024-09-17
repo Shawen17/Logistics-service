@@ -8,10 +8,11 @@ import {
   SearchContainer,
   PasswordIcon,
 } from '../LoginForm/LoginForm.style';
-import { signup } from '../../pages/ApiHelper';
 import { DATA_STATES } from '../../pages/KanbanBoard/KanbanBoard';
-import { useHistory, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
+import { signup } from '../../action/auth';
+import { connect } from 'react-redux';
 
 export interface SignupFormProps {
   initialValues?: {
@@ -24,7 +25,10 @@ export interface SignupFormProps {
   };
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
+const SignupForm: React.FC<SignupFormProps & { signup: any }> = ({
+  initialValues = {},
+  signup,
+}) => {
   const [inputValues, setValues] = useState<{
     CustomerFirstName?: string;
     CustomerLastName?: string;
@@ -39,7 +43,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
   const [error, setError] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const HandleFocus =
     (setFocus: React.Dispatch<React.SetStateAction<boolean>>) => () => {
@@ -91,7 +95,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
         }
         setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
         if (!errorOccured && signupMessage) {
-          history.push('/login');
+          navigate('/');
         }
       } else {
         setError(true);
@@ -202,7 +206,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
         </SearchContainer>
 
         <Link
-          to="/login"
+          to="/"
           className="font-montserrat-uniquifier text-2x1 p-1 mt-1 text-teal-500"
         >
           login
@@ -222,4 +226,4 @@ const SignupForm: React.FC<SignupFormProps> = ({ initialValues = {} }) => {
   );
 };
 
-export default SignupForm;
+export default connect(null, { signup })(SignupForm);

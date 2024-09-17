@@ -11,3 +11,11 @@ export const Container = styled.div`
   flex: 1;
   padding: 5px;
 `;
+
+export const Total = styled.span`
+  margin-left: 5px;
+  font-family: 'Buda', serif;
+  font-weight: 300;
+  font-style: normal;
+  color: teal;
+`;

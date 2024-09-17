@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import SignupForm from './SignupForm';
-import { signup } from '../../pages/ApiHelper';
+import { signup } from '../../action/auth';
 
 jest.mock('../../pages/ApiHelper', () => ({
   signup: jest.fn(),

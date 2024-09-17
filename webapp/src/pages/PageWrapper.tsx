@@ -2,13 +2,19 @@ import React from 'react';
 import Header from '../components/Header/Header';
 
 interface PageWrapperProps {
-  children: string | JSX.Element | JSX.Element[] | (() => JSX.Element);
+  children:
+    | string
+    | JSX.Element
+    | (string | JSX.Element)[]
+    | (() => JSX.Element);
 }
 
 const links = [
   { label: 'Home', url: '/' },
   { label: 'Products', url: '/products' },
-  { label: 'Login', url: '/login' },
+  { label: 'Orders', url: '/orders' },
+  { label: 'Picker', url: '/picker' },
+  { label: 'Logout', url: '/logout' },
 ];
 
 const PageWrapper = (props: PageWrapperProps) => (
