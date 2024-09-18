@@ -1,11 +1,7 @@
 import OrderSheetPage from '../OrderSheetPage/OrderSheetPage';
 import { useEffect, useState } from 'react';
 import MovableItemList from '../../components/MovableItemList/MovableItemList';
-import {
-  updateOrderStatus,
-  pickerInpipelineOrder,
-  handlePrint,
-} from '../ApiHelper';
+import { updateOrderStatus, pickerInpipelineOrder } from '../ApiHelper';
 import Spinner from '../../components/Spinner/Spinner';
 import PageWrapper from '../PageWrapper';
 import { Container } from '../KanbanBoard/KanbanBoard.styles';
@@ -15,6 +11,8 @@ import { RootState, User } from '../../components/interfaces';
 import { logout } from '../../action/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 export const DATA_STATES = {
   waiting: 'WAITING',
@@ -38,6 +36,11 @@ const PickerDashBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
   } as PickerOrder);
   const picker = user ? user.CustomerEmail : '';
   let orderSheetData: Order[] = [...data.InProgress];
+  const componentRef = useRef<HTMLDivElement | null>(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   const getOrders = async () => {
     setLoadingState(DATA_STATES.waiting);
@@ -162,22 +165,30 @@ const PickerDashBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
     <PageWrapper>
       <h1 className="roboto-thin mb-5">YOUR ORDERS</h1>
       {content}
-      <h2 className="roboto-thin mb-5">ORDER SHEET</h2>
+      <div
+        className="flex flex-col items-center justify-center p-4 h-full w-full"
+        ref={componentRef}
+      >
+        <h2 className="roboto-thin mb-5">ORDER SHEET</h2>
 
-      {orderSheetData.length > 0 ? (
-        <>
-          {orderSheetData.map((item) => (
-            <OrderSheetPage key={item.OrderID} item={item} />
-          ))}
-        </>
-      ) : (
-        ''
-      )}
+        {orderSheetData.length > 0 ? (
+          <>
+            {orderSheetData.map((item) => (
+              <OrderSheetPage key={item.OrderID} item={item} />
+            ))}
+          </>
+        ) : (
+          ''
+        )}
+      </div>
       <button onClick={handlePrint} className="print-button">
+        Print
         <FontAwesomeIcon
           icon={faPrint}
           style={{
-            color: 'lightgreen',
+            color: 'grey',
+            marginLeft: 4,
+            fontSize: 15,
           }}
         />
       </button>

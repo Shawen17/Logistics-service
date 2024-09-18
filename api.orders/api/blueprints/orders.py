@@ -2,7 +2,8 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 from api.models import Orders, Activity
 from api.schemas import OrderSchema, ActivitySchema
-from datetime import datetime
+from datetime import datetime, timezone
+import pytz
 
 from api.auth_middleware import token_required
 
@@ -81,17 +82,27 @@ def post_update_order_status(current_user):
             Activity.create(
                 OrderID=order["OrderID"],
                 Staff=current_user.get("CustomerID"),
-                StartTime=datetime.now(),
+                StartTime=datetime.now(pytz.timezone("US/Eastern")),
             )
         elif order["OrderStatus"] == "QA":
-            activity = Activity.get(Activity.OrderID == order["OrderID"])
-            if activity.StartTime:
-                Activity.update(EndTime=datetime.now()).where(
-                    Activity.OrderID == order["OrderID"]
-                ).execute()
+            try:
+                activity = Activity.get(Activity.OrderID == order["OrderID"])
+                if activity.StartTime:
+                    Activity.update(
+                        EndTime=datetime.now(pytz.timezone("US/Eastern"))
+                    ).where(Activity.OrderID == order["OrderID"]).execute()
 
-            Activity.update_end_time_and_duration(activity_id=activity.ActivityID)
-
+                    Activity.update_end_time_and_duration(
+                        activity_id=activity.ActivityID
+                    )
+                else:
+                    print(
+                        f"StartTime is missing for Activity with OrderID: {order['OrderID']}"
+                    )
+            except Activity.DoesNotExist:
+                print(f"Activity not found for OrderID: {order['OrderID']}")
+            except Exception as e:
+                print(f"Error handling 'QA' status: {e}")
         elif order["OrderStatus"] == "Queued":
 
             Activity.delete().where(

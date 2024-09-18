@@ -9,11 +9,11 @@ from peewee import (
     BooleanField,
     DateTimeField,
     FloatField,
-    SQL,
 )
 from playhouse.mysql_ext import MariaDBConnectorDatabase, JSONField
 import re
-import datetime
+from datetime import datetime
+import pytz
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -129,7 +129,9 @@ class Orders(BaseModel):
     )
     State = CharField(100, null=True)
     Address = CharField(150, null=True)
-    OrderDate = CharField(default=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    OrderDate = CharField(
+        default=datetime.now(pytz.timezone("US/Eastern")).strftime("%Y-%m-%d %H:%M:%S")
+    )
     TreatedBy = CharField(150, null=True)
 
     class Meta:
@@ -164,9 +166,10 @@ class Activity(BaseModel):
     def update_end_time_and_duration(cls, activity_id):
         activity = cls.get(cls.ActivityID == activity_id)
         if activity.StartTime:
-            activity.EndTime = datetime.datetime.now()
-            # Recalculate duration
-            activity.Duration = (
-                activity.EndTime - activity.StartTime
-            ).total_seconds() / 60.0
-            activity.save()
+            try:
+                activity.Duration = (
+                    activity.EndTime - activity.StartTime
+                ).total_seconds() / 60.0
+                activity.save()
+            except Exception as e:
+                print(f"Update Duration encountered Error: {e}")

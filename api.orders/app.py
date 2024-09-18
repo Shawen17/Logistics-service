@@ -26,6 +26,7 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = SECRET_KEY
 
+
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 REQUEST_COUNT = Counter(

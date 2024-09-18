@@ -38,6 +38,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mariadb
+      - redis-cache
     volumes:
       - ./api.orders:/api.orders
     environment:
@@ -46,6 +47,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_HOST: mariadb
       MYSQL_PORT: 3306
+      REDIS_HOST: ${REDIS_HOST}
     networks:
       - app_network
 
@@ -62,7 +64,7 @@ services:
     restart: on-failure
     volumes:
       - ./db/data.sql:/docker-entrypoint-initdb.d/1.sql
-      - mariadb_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     networks:
       - app_network
     healthcheck:
@@ -87,6 +89,31 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+
+
+  redis-cache:
+    image: redis
+    container_name: redis-container
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    networks:
+      - app_network
+
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    ports:
+      - 9121:9121
+    environment:
+      REDIS_ADDR: "redis://redis-container:6379"
+    depends_on:
+      - redis-cache
+    networks:
+      - app_network
 
   
 
@@ -119,7 +146,7 @@ services:
 
 volumes:
   grafana-storage:
-  mariadb_data:
+  db_data:
 
 networks:
   app_network:

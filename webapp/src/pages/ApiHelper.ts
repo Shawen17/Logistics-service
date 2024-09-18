@@ -8,12 +8,6 @@ const UPDATE_STATUS_URL = '/api/orders/update_status';
 
 
 
-
-
-
-
-
-
 const getAllProducts = async ()=>{
   let productData
   let errorOccured = false;
@@ -132,29 +126,8 @@ const updateOrderStatus = async (order: Order, newOrderStatus: string, user:stri
     return orderStatusUpdated;
 };
 
-const handlePrint = () => {
-  const printWindow = window.open('', '', 'height=800,width=600');
-  
-  if (printWindow) {
-    const headingElement = document.querySelector('h2');
-    const orderSheetElement = document.querySelector('OrderSheetPage');
-
-    if (headingElement && orderSheetElement) {
-      printWindow.document.write('<html><head><title>Print Order Sheet</title>');
-      printWindow.document.write('<link rel="stylesheet" href="./PickerDashBoard/print.css">'); // Include print-specific CSS if needed
-      printWindow.document.write('</head><body>');
-      printWindow.document.write(headingElement.outerHTML); // Print the Order Sheet heading
-      printWindow.document.write(orderSheetElement.outerHTML); // Print the Order Sheet content
-      printWindow.document.write('</body></html>');
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-    } else {
-      console.error('Required elements not found for printing.');
-    }
-  }
-};
 
 
 
-export { getInPipelineData, INPIPELINE_URL, updateOrderStatus, UPDATE_STATUS_URL, getAllProducts, PRODUCT_URL, pickerInpipelineOrder, handlePrint };
+
+export { getInPipelineData, INPIPELINE_URL, updateOrderStatus, UPDATE_STATUS_URL, getAllProducts, PRODUCT_URL, pickerInpipelineOrder };

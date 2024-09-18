@@ -1,11 +1,12 @@
 from flask import Blueprint, request
-from marshmallow import ValidationError
 from api.models import Customer
 from api.schemas import CustomerSchema
 import jwt
 import os
 from dotenv import load_dotenv
 import logging
+from datetime import datetime, timedelta
+import pytz
 
 
 load_dotenv()
@@ -58,8 +59,11 @@ def update_product_status():
         if error:
             return {"message": error}, 400
         customer = customer_schema.dump(customer)
+        expiration_time = datetime.now(pytz.timezone("US/Eastern")) + timedelta(hours=1)
         customer["token"] = jwt.encode(
-            {"user_id": customer["CustomerID"]}, SECRET_KEY, algorithm="HS256"
+            {"user_id": customer["CustomerID"], "exp": expiration_time},
+            SECRET_KEY,
+            algorithm="HS256",
         )
         return {"data": customer, "message": "Login Succesfull"}, 200
     except Exception as e:
