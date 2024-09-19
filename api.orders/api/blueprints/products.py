@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 from api.models import Product
 from api.schemas import ProductSchema
+from logger import logger
 
 products_blueprint = Blueprint("products_blueprint", __name__)
 
@@ -15,6 +16,7 @@ def get_or_post_products():
             products_serialized = product_schema.dump(list(products))
             return {"data": products_serialized, "message": "Retrieval Successful"}, 200
         except Exception as err:
+            logger.error(f"Error in GET get_or_post_products: {err}")
             return {"data": [], "message": str(err)}, 500
 
     product_schema = ProductSchema()
@@ -32,8 +34,10 @@ def get_or_post_products():
             "message": "Product added successfully",
         }, 201
     except ValidationError as err:
+        logger.error(f"ValidationError in POST get_or_post_products: {err}")
         return {"message": err.messages}, 422
     except Exception as err:
+        logger.error(f"Error in POST get_or_post_products: {err}")
         return {"data": [], "message": str(err)}, 500
 
 
@@ -49,7 +53,9 @@ def update_product_status():
             Product.ProductID == product["ProductID"]
         ).execute()
     except ValidationError as err:
+        logger.error(f"ValidationError in PUT update_product_status: {err}")
         return {"message": err.messages}, 422
     except Exception as err:
+        logger.error(f"Error in PUT update_product_status: {err}")
         return {"message": str(err)}, 500
     return {"message": f'{product["ProductID"]} updated successfully!'}, 200

@@ -4,7 +4,7 @@ from api.schemas import CustomerSchema
 import jwt
 import os
 from dotenv import load_dotenv
-import logging
+from logger import logger
 from datetime import datetime, timedelta
 import pytz
 
@@ -31,18 +31,21 @@ def add_user():
         validated = customer_schema.load(json_data)
         if not validated:
             return dict(message="Invalid data", data=None, error=validated), 400
-        customer = Customer.create(**validated)
-        user = customer_schema.dump(customer)
-
-        if not user:
+        try:
+            user_exist = Customer.get(CustomerEmail=validated.get("CustomerEmail"))
+        except Customer.DoesNotExist:
+            user_exist = None
+        if user_exist:
             return {
                 "message": "User already exists",
-                "error": "Conflict",
+                # "error": "User already exists",
                 "data": None,
             }, 409
+        customer = Customer.create(**validated)
+        user = customer_schema.dump(customer)
         return {"message": "Successfully created new user", "data": user}, 201
     except Exception as e:
-        logging.error(str(e))
+        logger.error(str(e))
         return {"message": "Something went wrong", "error": str(e), "data": None}, 500
 
 
@@ -67,4 +70,5 @@ def update_product_status():
         )
         return {"data": customer, "message": "Login Succesfull"}, 200
     except Exception as e:
+        logger.error(e)
         return {"message": e}, 400

@@ -40,7 +40,7 @@ const SignupForm: React.FC<SignupFormProps & { signup: any }> = ({
   const [emailFocus, setEmailFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [loadingState, setLoadingState] = useState(DATA_STATES.loaded);
-  const [error, setError] = useState(false);
+  const [msg, setMsg] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const SignupForm: React.FC<SignupFormProps & { signup: any }> = ({
     };
 
   const HandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setError(false);
+    setMsg('');
     const name = event.target.name;
     const value = event.target.value;
     setValues((values) => ({ ...values, [name]: value.trim() }));
@@ -90,15 +90,14 @@ const SignupForm: React.FC<SignupFormProps & { signup: any }> = ({
           CustomerLastName,
           CustomerNumber
         );
-        if (errorOccured) {
-          setError(true);
-        }
+        setMsg(signupMessage);
+
         setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
-        if (!errorOccured && signupMessage) {
+        if (!errorOccured) {
           navigate('/');
         }
       } else {
-        setError(true);
+        setMsg('Password does not match');
         setLoadingState(DATA_STATES.error);
       }
     }
@@ -131,7 +130,9 @@ const SignupForm: React.FC<SignupFormProps & { signup: any }> = ({
         <Title className="font-montserrat-uniquifier p-1 mt-1 text-teal-500">
           Welcome! Register to get Started!
         </Title>
-        {error && <p className="test-id-failure">Signup Unsuccesful</p>}
+        {msg && (
+          <p className="mb-2 font-montserrat-uniquifier text-red-200">{msg}</p>
+        )}
         <SearchContainer>
           <Input
             placeholder="First Name"
@@ -190,7 +191,9 @@ const SignupForm: React.FC<SignupFormProps & { signup: any }> = ({
         inputValues.ConfirmPassword.length >=
           (inputValues.CustomerPassword?.length || 0) &&
         inputValues.CustomerPassword !== inputValues.ConfirmPassword ? (
-          <p>Password does not match</p>
+          <p className="mb-2 font-montserrat-uniquifier text-red-200">
+            Password does not match
+          </p>
         ) : (
           ''
         )}

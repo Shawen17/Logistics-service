@@ -13,8 +13,8 @@ const Header = (props: HeaderProps) => {
       <div>
         {props.links.map((headerLink, index) => {
           const classes = `
-                                ${index < props.links.length - 1 ? 'pr-4' : ''} text-xl text-white font-bold
-                            `;
+            ${index < props.links.length - 1 ? 'pr-4' : ''} text-xl text-white font-bold
+            `;
           const testId = `link-${index}`;
           return (
             <Link

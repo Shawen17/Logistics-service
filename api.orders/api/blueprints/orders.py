@@ -2,9 +2,9 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 from api.models import Orders, Activity
 from api.schemas import OrderSchema, ActivitySchema
-from datetime import datetime, timezone
+from datetime import datetime
 import pytz
-
+from logger import logger
 from api.auth_middleware import token_required
 
 orders_blueprint = Blueprint("orders_blueprint", __name__)
@@ -18,6 +18,7 @@ def get_all_orders(current_user):
         orders = Orders.select().dicts()
         orders_serialized = order_schema.dump(orders)
     except Exception as err:
+        logger.error(f"Error in get_all_orders: {err}")
         return {"data": [], "message": str(err)}, 500
     return {"data": orders_serialized, "message": "Retrieval Successful"}, 200
 
@@ -40,6 +41,7 @@ def get_inprogress_orders(current_user):
         orders_serialized = order_schema.dump(orders)
         return {"data": orders_serialized, "message": "Order retrieval successful"}, 200
     except Exception as err:
+        logger.error(f"Error in get_inprogress_orders: {err}")
         return {"data": [], "message": str(err)}, 500
 
 
@@ -48,8 +50,6 @@ def get_inprogress_orders(current_user):
 def get_pickerinprogress_orders(current_user):
     order_schema = OrderSchema(many=True)
     # user = request.args.get("user")
-
-    print(current_user, flush=True)
     try:
         orders = (
             Orders.select()
@@ -62,6 +62,7 @@ def get_pickerinprogress_orders(current_user):
         orders_serialized = order_schema.dump(orders)
         return {"data": orders_serialized, "message": "Order retrieval successful"}, 200
     except Exception as err:
+        logger.error(f"Error in get_pickerinprogress_orders: {err}")
         return {"data": [], "message": str(err)}, 500
 
 
@@ -75,9 +76,7 @@ def post_update_order_status(current_user):
 
     try:
         order = order_schema.load(json_data)
-        print(current_user, flush=True)
         Orders.update(**order).where(Orders.OrderID == order["OrderID"]).execute()
-
         if order["OrderStatus"] == "InProgress":
             Activity.create(
                 OrderID=order["OrderID"],
@@ -96,13 +95,13 @@ def post_update_order_status(current_user):
                         activity_id=activity.ActivityID
                     )
                 else:
-                    print(
+                    logger.info(
                         f"StartTime is missing for Activity with OrderID: {order['OrderID']}"
                     )
             except Activity.DoesNotExist:
-                print(f"Activity not found for OrderID: {order['OrderID']}")
+                logger.error(f"Activity not found for OrderID: {order['OrderID']}")
             except Exception as e:
-                print(f"Error handling 'QA' status: {e}")
+                logger.error(f"Error handling 'QA' status: {e}")
         elif order["OrderStatus"] == "Queued":
 
             Activity.delete().where(
@@ -115,9 +114,10 @@ def post_update_order_status(current_user):
             ).execute()
 
     except ValidationError as err:
+        logger.error(f"Error in post_update_order_status: {err}")
         return {"message": err.messages}, 422
     except Exception as err:
-        print(err, flush=True)
+        logger.error(err)
         return {"message": str(err)}, 500
     return {
         "message": f'{order["OrderID"]} updated successfully!',

@@ -1,8 +1,6 @@
 import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  AUTHENTICATION_SUCCESS,
-  AUTHENTICATION_FAIL,
   LOGOUT,
   PASSWORD_RESET_SUCCESS,
   PASSWORD_RESET_FAIL,
@@ -84,22 +82,28 @@ export const signup =
       CustomerPassword,
       CustomerNumber,
     });
+    
 
     try {
       const response = await axios.post(SIGNUP_URL, body, config);
-
+      
       if (response?.status === 201) {
         signupMessage = response.data.message;
+        
         dispatch({
           type: SIGNUP_SUCCESS,
           payload: signupMessage,
         });
       } else {
-        const message = response.data.message;
-        throw message;
+        signupMessage = response.data.message;
+        
+        throw signupMessage;
       }
     } catch (err) {
       if (err instanceof Error) {
+        if(err.message === "Request failed with status code 409"){
+          signupMessage= "User is Already Registered"
+        }
         console.log(err.message);
       } else {
         console.log('An unknown error occurred');
@@ -107,8 +111,10 @@ export const signup =
       dispatch({
         type: SIGNUP_FAIL,
       });
+      
       errorOccured = true;
     }
+    
     return { signupMessage, errorOccured };
   };
 

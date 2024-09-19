@@ -15,7 +15,7 @@ import re
 from datetime import datetime
 import pytz
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from logger import logger
 
 load_dotenv()
 
@@ -172,4 +172,4 @@ class Activity(BaseModel):
                 ).total_seconds() / 60.0
                 activity.save()
             except Exception as e:
-                print(f"Update Duration encountered Error: {e}")
+                logger.error(f"Update Duration encountered Error: {e}")

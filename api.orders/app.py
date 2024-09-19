@@ -12,6 +12,7 @@ from peewee import OperationalError
 import os
 from prometheus_client import Counter, generate_latest
 from dotenv import load_dotenv
+from logger import logger
 
 load_dotenv()
 
@@ -53,11 +54,11 @@ def connect_to_db(retries=5, delay=3):
     while retries > 0:
         try:
             db.connect()
-            print("Database connected successfully.")
+            logger.info("Database connected successfully.")
             return
         except OperationalError as e:
             delay_time = delay * delay_factor
-            print(f"Connection failed: {e}, retrying in {delay_time} seconds...")
+            logger.info(f"Connection failed: {e}, retrying in {delay_time} seconds...")
             time.sleep(delay_time)
             delay_factor += 1
             retries -= 1
@@ -75,7 +76,7 @@ def execute_image_url_injection(images: List[Dict[str, str]]) -> None:
             product.ProductPhotoURL = image["photo"]
             product.save()
     except Exception as e:
-        print(f"Error updating product: {e}")
+        logger.error(f"Error updating product: {e}")
 
 
 @app.route("/")
@@ -96,7 +97,7 @@ if __name__ == "__main__":
     try:
         # Execute photo url upload to ProductPhotoURL
         execute_image_url_injection(image_urls)
-        print("SQL file executed successfully.")
+        logger.info("SQL file executed successfully.")
         app.run(debug=True, host="0.0.0.0", port=5001)
     except Exception as e:
-        print(f"Failed to execute SQL file: {e}")
+        logger.error(f"Failed to execute SQL file: {e}")
