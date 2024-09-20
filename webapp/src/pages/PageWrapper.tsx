@@ -1,5 +1,8 @@
 import React from 'react';
 import Header from '../components/Header/Header';
+import { connect } from 'react-redux';
+import { RootState } from '../components/interfaces';
+import { HeaderLink } from '../components/interfaces';
 
 interface PageWrapperProps {
   children:
@@ -9,23 +12,37 @@ interface PageWrapperProps {
     | (() => JSX.Element);
 }
 
-const links = [
+const navItem: HeaderLink[] = [
   { label: 'Home', url: '/' },
   { label: 'Products', url: '/products' },
   { label: 'Orders', url: '/orders' },
   { label: 'Picker', url: '/picker' },
   { label: 'Logout', url: '/logout' },
+  { label: 'Activity', url: '/activity' },
 ];
 
-const PageWrapper = (props: PageWrapperProps) => (
-  <>
-    <div className="sticky top-0">
-      <Header links={links} />
-    </div>
-    <div className="flex flex-col items-center justify-center p-4 h-full">
-      {props.children}
-    </div>
-  </>
-);
+const PageWrapper: React.FC<PageWrapperProps & { role: string }> = ({
+  children,
+  role,
+}) => {
+  const allowed = ['team_lead', 'manager'];
+  const links: HeaderLink[] = allowed.includes(role)
+    ? navItem
+    : navItem.slice(0, 5);
+  return (
+    <>
+      <div className="sticky top-0">
+        <Header links={links} />
+      </div>
+      <div className="flex flex-col items-center justify-center p-4 h-full">
+        {children}
+      </div>
+    </>
+  );
+};
 
-export default PageWrapper;
+const mapStateToProps = (state: RootState) => ({
+  role: state.auth.role,
+});
+
+export default connect(mapStateToProps, null)(PageWrapper);

@@ -2,6 +2,7 @@ from flask import Flask, request
 from api.blueprints.orders import orders_blueprint
 from api.blueprints.products import products_blueprint
 from api.blueprints.customers import customers_blueprint
+from api.blueprints.activity import activity_blueprint
 from api.models import db
 from api.imageUrlData import image_urls
 from api.models import Product
@@ -92,6 +93,7 @@ def metrics():
 app.register_blueprint(orders_blueprint, url_prefix=ORDERS_URL)
 app.register_blueprint(products_blueprint, url_prefix=PRODUCTS_URL)
 app.register_blueprint(customers_blueprint, url_prefix=CUSTOMERS_URL)
+app.register_blueprint(activity_blueprint, url_prefix=_URL_PREFIX)
 
 if __name__ == "__main__":
     try:

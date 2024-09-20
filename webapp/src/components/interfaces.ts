@@ -12,6 +12,16 @@ export interface Order {
 
 }
 
+export interface Activity {
+  ActivityID: number;
+  OrderID: number;
+  Staff: number;
+  StartTime: Date;
+  EndTime:Date | null;
+  Duration:number | null;
+  CheckedBy:number | null;
+}
+
 export interface User {
   CustomerID: number;
   CustomerFirstName: string;
@@ -51,7 +61,7 @@ export interface HeaderLink {
 }
 
 export interface HeaderProps {
-    links: HeaderLink[];
+    links: HeaderLink[] ;
 }
 
 export interface ProductProps {

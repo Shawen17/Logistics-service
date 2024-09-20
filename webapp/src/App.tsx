@@ -7,6 +7,7 @@ import Spinner from './components/Spinner/Spinner';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Logout from './components/Logout/Logout';
 
+const Performance = lazy(() => import('./pages/Performance/Performance'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage/ProductsPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage/SignupPage'));
@@ -37,6 +38,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <PickerDashBoard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/activity"
+              element={
+                <ProtectedRoute>
+                  <Performance />
                 </ProtectedRoute>
               }
             />

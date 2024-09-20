@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from marshmallow import ValidationError
 from api.models import Orders, Activity
-from api.schemas import OrderSchema, ActivitySchema
+from api.schemas import OrderSchema
 from datetime import datetime
 import pytz
 from logger import logger
@@ -36,6 +36,8 @@ def get_inprogress_orders(current_user):
                 | (Orders.OrderStatus == "InProgress")
                 | (Orders.OrderStatus == "QA")
             )
+            .order_by(Orders.OrderDate.desc())
+            .limit(100)
             .dicts()
         )
         orders_serialized = order_schema.dump(orders)
