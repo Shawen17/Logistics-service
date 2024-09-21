@@ -8,6 +8,8 @@ import { logout } from '../../action/auth';
 import Spinner from '../../components/Spinner/Spinner';
 import PageWrapper from '../PageWrapper';
 import ActivityFilter from '../../components/ActivityTable/ActivityFilter';
+import { User } from '../../components/interfaces';
+import StaffDetails from '../../components/StaffDetails/StaffDetails';
 
 export type searchValue = {
   order?: number;
@@ -21,6 +23,7 @@ const Performance: React.FC<{ logout: any }> = ({ logout }) => {
   const [data, setData] = useState<Activity[]>([]);
   const [loadingState, setLoadingState] = useState(DATA_STATES.waiting);
   const [input, setInputs] = useState<searchValue>({});
+  const [staffInfo, setStaffInfo] = useState<User | {}>({});
   const [clicked, setClicked] = useState(false);
   const titles = [
     'OrderID',
@@ -47,7 +50,9 @@ const Performance: React.FC<{ logout: any }> = ({ logout }) => {
       setLoadingState(DATA_STATES.waiting);
       const { activityData, errorOccured, expired } =
         await getAllActivities(input);
-      setData(activityData);
+      setData(activityData.activity);
+
+      setStaffInfo({ ...activityData.staff, count: activityData.count });
       setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
       if (expired) {
         logout();
@@ -60,6 +65,7 @@ const Performance: React.FC<{ logout: any }> = ({ logout }) => {
   else if (loadingState === DATA_STATES.loaded)
     content = (
       <>
+        {input.staff && <StaffDetails details={staffInfo} />}
         <ActivityFilter
           handleChange={handleChange}
           input={input}

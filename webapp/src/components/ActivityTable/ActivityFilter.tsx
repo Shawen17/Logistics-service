@@ -54,7 +54,7 @@ const ActivityFilter: React.FC<InputProps> = ({
           <SearchItem>
             <SearchTitle>Start Date</SearchTitle>
             <Input
-              type="date"
+              type="datetime-local"
               name="start_date"
               value={input.start_date || ''}
               onChange={handleChange}
@@ -63,7 +63,7 @@ const ActivityFilter: React.FC<InputProps> = ({
           <SearchItem>
             <SearchTitle>End Date</SearchTitle>
             <Input
-              type="date"
+              type="datetime-local"
               name="end_date"
               value={input.end_date || ''}
               onChange={handleChange}

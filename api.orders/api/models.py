@@ -16,6 +16,8 @@ from datetime import datetime
 import pytz
 from werkzeug.security import generate_password_hash, check_password_hash
 from logger import logger
+import math
+
 
 load_dotenv()
 
@@ -167,9 +169,10 @@ class Activity(BaseModel):
         activity = cls.get(cls.ActivityID == activity_id)
         if activity.StartTime:
             try:
-                activity.Duration = (
+                duration_seconds = (
                     activity.EndTime - activity.StartTime
-                ).total_seconds() / 60.0
+                ).total_seconds()
+                activity.Duration = math.ceil(duration_seconds / 60.0)
                 activity.save()
             except Exception as e:
                 logger.error(f"Update Duration encountered Error: {e}")

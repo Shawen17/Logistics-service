@@ -9,6 +9,8 @@
 @layer utilities {
     .animate-glow {
       animation: glow 1s ease-in-out;
+      
+      
     }
   }
 

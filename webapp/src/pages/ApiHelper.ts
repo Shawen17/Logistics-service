@@ -10,8 +10,14 @@ const ACTIVITY_URL = 'api/activities'
 const statusCode = [401,403,419]
 
 
+const formatDate = (date:string)=>{
+  const dateStr = new Date(date)
+  return dateStr.toISOString().slice(0, 19).replace("T", " ")
+}
+
+
 const getAllActivities = async (input:searchValue)=>{
-  console.log(input)
+  
   let activityData = []
   let expired = false;
   let errorOccured = false;
@@ -27,8 +33,8 @@ const getAllActivities = async (input:searchValue)=>{
   if (input.order) queryParams.append("order", input.order.toString());
   if (input.staff) queryParams.append("staff", input.staff.toString());
   if (input.checked_by) queryParams.append("checked_by", input.checked_by.toString());
-  // if (startDate) queryParams.append("start_date", startDate);
-  // if (endDate) queryParams.append("end_date", endDate);
+  if (input.start_date) queryParams.append("start_date", formatDate(input.start_date));
+  if (input.end_date) queryParams.append("end_date", formatDate(input.end_date) );
       const response = await axios.get(`${ACTIVITY_URL}?${queryParams.toString()}`,config);
       if (response?.status === 200) {
           activityData = response.data.data;

@@ -95,7 +95,7 @@ const LoginForm: React.FC<
         <Title className="font-montserrat-uniquifier p-1 mt-1 text-teal-500">
           Welcome! Enter Details
         </Title>
-        {error && <p className="error-text">{error}</p>}
+        {error && <p className="p-1 mb-3 text-red-500">{error}</p>}
         <SearchContainer>
           <Input
             placeholder="abc@yahoo.com"

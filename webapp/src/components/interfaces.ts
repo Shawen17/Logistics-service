@@ -22,7 +22,7 @@ export interface Activity {
   CheckedBy:number | null;
 }
 
-export interface User {
+export type User ={
   CustomerID: number;
   CustomerFirstName: string;
   CustomerLastName: string;
@@ -30,6 +30,7 @@ export interface User {
   CustomerNumber:string;
   Active:boolean;
   Role:string
+  count?:number
 }
 
 export interface RootState {

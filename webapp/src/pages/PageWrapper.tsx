@@ -21,14 +21,20 @@ const navItem: HeaderLink[] = [
   { label: 'Activity', url: '/activity' },
 ];
 
-const PageWrapper: React.FC<PageWrapperProps & { role: string }> = ({
-  children,
-  role,
-}) => {
+const PageWrapper: React.FC<
+  PageWrapperProps & { role: string } & { isAuthenticated: boolean }
+> = ({ children, role, isAuthenticated }) => {
   const allowed = ['team_lead', 'manager'];
-  const links: HeaderLink[] = allowed.includes(role)
-    ? navItem
-    : navItem.slice(0, 5);
+  let links: HeaderLink[];
+
+  if (!isAuthenticated) {
+    links = [
+      { label: 'Home', url: '/' },
+      { label: 'Products', url: '/products' },
+    ];
+  } else {
+    links = allowed.includes(role) ? navItem : navItem.slice(0, 5);
+  }
   return (
     <>
       <div className="sticky top-0">
@@ -43,6 +49,7 @@ const PageWrapper: React.FC<PageWrapperProps & { role: string }> = ({
 
 const mapStateToProps = (state: RootState) => ({
   role: state.auth.role,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default connect(mapStateToProps, null)(PageWrapper);

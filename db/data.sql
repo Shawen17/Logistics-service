@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS `Activity`;
 CREATE USER 'monitoring_user'@'%' IDENTIFIED BY 'changeme';
 GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'monitoring_user'@'%' IDENTIFIED BY 'changeme';
 GRANT SUPER ON *.* TO 'monitoring_user'@'%';
+GRANT FILE ON *.* TO 'monitoring_user'@'%';
 FLUSH PRIVILEGES;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -77,13 +78,13 @@ INSERT INTO `Orders` (`OrderID`, `OrderStatus`, `Products`, `CustomerID`, `State
 VALUES (2,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 4, 3), 'quantities', JSON_ARRAY(2, 1, 1)),1,'Ontario','124 missi','2024-09-16 16:33:35',''),
 (3,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(4, 3), 'quantities', JSON_ARRAY(1, 1)),2,'Ontario','12, maddison','2024-09-10 16:33:35',''),
 (4,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 6), 'quantities', JSON_ARRAY(2, 1)),3,'Ontario','21, benfield','2024-09-16 12:46:23',''),
-(5,'InProgress', JSON_OBJECT('product_ids', JSON_ARRAY(6, 1), 'quantities', JSON_ARRAY(3, 1)),3,'Ontario','34, Arkansas','2024-09-14 8:13:35',''),
-(6,'InProgress', JSON_OBJECT('product_ids', JSON_ARRAY(1, 5), 'quantities', JSON_ARRAY(1, 1)),4,'Ontario','32, Detriote','2024-09-09 18:20:35',''),
-(7,'InProgress', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 3)),1,'Ontario','30, London','2024-09-11 11:33:35',''),
-(8,'QA', JSON_OBJECT('product_ids', JSON_ARRAY(3, 5), 'quantities', JSON_ARRAY(2, 2)),2,'Ontario','29, denver','2024-09-16 6:43:35',''),
-(9,'Complete', JSON_OBJECT('product_ids', JSON_ARRAY(5, 2), 'quantities', JSON_ARRAY(1, 3)),3,'Ontario','20, prodigy','2024-09-10 15:33:35',''),
-(10,'Cancelled', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 7)),1,'Ontario','32, north york','2024-09-05 7:50:35',''),
-(11,'Cancelled', JSON_OBJECT('product_ids', JSON_ARRAY(1, 3), 'quantities', JSON_ARRAY(1, 1)),2,'Ontario','12, bishop','2024-09-04 16:33:35','');
+(5,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(6, 1), 'quantities', JSON_ARRAY(3, 1)),3,'Ontario','34, Arkansas','2024-09-14 8:13:35',''),
+(6,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 5), 'quantities', JSON_ARRAY(1, 1)),4,'Ontario','32, Detriote','2024-09-09 18:20:35',''),
+(7,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 3)),1,'Ontario','30, London','2024-09-11 11:33:35',''),
+(8,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(3, 5), 'quantities', JSON_ARRAY(2, 2)),2,'Ontario','29, denver','2024-09-16 6:43:35',''),
+(9,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(5, 2), 'quantities', JSON_ARRAY(1, 3)),3,'Ontario','20, prodigy','2024-09-10 15:33:35',''),
+(10,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 7)),1,'Ontario','32, north york','2024-09-05 7:50:35',''),
+(11,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 3), 'quantities', JSON_ARRAY(1, 1)),2,'Ontario','12, bishop','2024-09-04 16:33:35','');
 /*!40000 ALTER TABLE `Orders` ENABLE KEYS */;
 UNLOCK TABLES;
 

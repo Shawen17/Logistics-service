@@ -12,6 +12,12 @@ export const StyledTable = styled.table`
     text-align: left;
   }
 
+  thead {
+  background-color:whitesmoke;
+  border-radius:8px;
+  border-style:none;
+  }
+
   td {
     padding: 8px;
     text-align: left;
@@ -83,15 +89,15 @@ border: 2px solid grey;
 height: 30px;
 width: 80px;
 padding:5px;
-display:flex
+display:flex;
 justify-content:center;
 align-items:center;
 font-family:"Montserrat", "sans-serif";
-margin-top:5px;
+margin-top:8px;
 
 
 &:hover{
-background-color:black;
+background-color:teal;
 color:white
 
 }
