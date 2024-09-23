@@ -44,9 +44,13 @@ const PickerDashBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
 
   const getOrders = async () => {
     setLoadingState(DATA_STATES.waiting);
-    const { orderData, errorOccured } = await pickerInpipelineOrder(picker);
+    const { orderData, errorOccured, expired } =
+      await pickerInpipelineOrder(picker);
     setData(orderData);
     setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
+    if (expired) {
+      logout();
+    }
   };
 
   const confirmOrder = async (order: Order): Promise<boolean> => {

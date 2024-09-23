@@ -34,10 +34,10 @@ const KanbanBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
 
   const getOrders = async () => {
     setLoadingState(DATA_STATES.waiting);
-    const { orderData, errorOccured } = await getInPipelineData();
+    const { orderData, errorOccured, expired } = await getInPipelineData();
     setData(orderData);
     setLoadingState(errorOccured ? DATA_STATES.error : DATA_STATES.loaded);
-    if (errorOccured) {
+    if (expired) {
       logout();
     }
   };

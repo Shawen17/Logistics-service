@@ -6,6 +6,7 @@ export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
+  margin-bottom: 20px;
 
   th {
     padding: 8px;
@@ -82,16 +83,19 @@ font-family:"Montserrat", "sans-serif";
 font-weight:400;
 font-style: italics;
 margin-bottom:3px;
+font-size:13px;
 `
 
 export const SearchButton = styled.button`
-border: 2px solid grey;
+border:none;
+border-radius:10px;
 height: 30px;
 width: 80px;
 padding:5px;
 display:flex;
 justify-content:center;
 align-items:center;
+font-size:12px;
 font-family:"Montserrat", "sans-serif";
 margin-top:8px;
 

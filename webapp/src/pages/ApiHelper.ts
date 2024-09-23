@@ -86,6 +86,7 @@ const pickerInpipelineOrder = async (picker:string) => {
     InProgress: [],
     QA: [],
   };
+  let expired = false
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -106,10 +107,15 @@ const pickerInpipelineOrder = async (picker:string) => {
       throw message;
     }
   } catch(err) {
+    if (axios.isAxiosError(err)) {
+      if(err.response){
+        expired = statusCode.includes(err.response.status)
+      }
     console.error(err);
     errorOccured = true;
   }
-  return { orderData, errorOccured };
+  }
+  return { orderData, errorOccured, expired };
 };
 
 
@@ -122,6 +128,7 @@ const getInPipelineData = async () => {
       InProgress: [],
       QA: [],
     };
+    let expired = false
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -142,10 +149,15 @@ const getInPipelineData = async () => {
         throw message;
       }
     } catch(err) {
+      if (axios.isAxiosError(err)) {
+        if(err.response){
+          expired = statusCode.includes(err.response.status)
+        }
       console.error(err);
       errorOccured = true;
     }
-    return { orderData, errorOccured };
+    }
+    return { orderData, errorOccured, expired };
 };
 
 
