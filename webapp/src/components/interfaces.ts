@@ -20,6 +20,9 @@ export interface Activity {
   EndTime:Date | null;
   Duration:number | null;
   CheckedBy:number | null;
+  QAStart:Date | null;
+  QAEnd:Date | null;
+  QADuration:number | null;
 }
 
 export type User ={

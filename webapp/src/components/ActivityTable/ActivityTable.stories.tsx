@@ -24,6 +24,9 @@ const mockActivities: Activity[] = [
     EndTime: new Date('2024-09-18T12:00:00'),
     Duration: 240,
     CheckedBy: 1002,
+    QAStart: new Date('2024-09-18T12:00:00'),
+    QAEnd: new Date('2024-09-19T12:00:00'),
+    QADuration: 3000,
   },
   {
     ActivityID: 2,
@@ -33,6 +36,9 @@ const mockActivities: Activity[] = [
     EndTime: null, // Activity still in progress
     Duration: 0,
     CheckedBy: null,
+    QAStart: null,
+    QAEnd: null,
+    QADuration: 0,
   },
 ];
 
@@ -46,6 +52,9 @@ Default.args = {
     'End Time',
     'Duration (minutes)',
     'Checked By',
+    'QAStart',
+    'QAEnd',
+    'QADuration',
   ],
   activities: mockActivities,
 };

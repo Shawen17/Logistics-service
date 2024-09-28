@@ -10,6 +10,7 @@ import PageWrapper from '../PageWrapper';
 import ActivityFilter from '../../components/ActivityTable/ActivityFilter';
 import { User } from '../../components/interfaces';
 import StaffDetails from '../../components/StaffDetails/StaffDetails';
+import { RootState } from '../../components/interfaces';
 
 export type searchValue = {
   order?: number;
@@ -19,20 +20,29 @@ export type searchValue = {
   end_date?: string;
 };
 
-const Performance: React.FC<{ logout: any }> = ({ logout }) => {
+const headerTitles = [
+  'OrderID',
+  'StaffID',
+  'StartTime',
+  'EndTime',
+  'Duration',
+  'CheckedBy',
+  'QAStart',
+  'QAEnd',
+  'QADuration',
+];
+
+const Performance: React.FC<{ logout: any } & { role: string }> = ({
+  logout,
+  role,
+}) => {
   const [data, setData] = useState<Activity[]>([]);
   const [loadingState, setLoadingState] = useState(DATA_STATES.waiting);
   const [input, setInputs] = useState<searchValue>({});
   const [staffInfo, setStaffInfo] = useState<User | {}>({});
   const [clicked, setClicked] = useState(false);
-  const titles = [
-    'OrderID',
-    'StaffID',
-    'StartTime',
-    'EndTime',
-    'Duration',
-    'CheckedBy',
-  ];
+  const titles = role === 'manager' ? headerTitles : headerTitles.slice(0, -3);
+  console.log(titles);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -84,4 +94,8 @@ const Performance: React.FC<{ logout: any }> = ({ logout }) => {
   );
 };
 
-export default connect(null, { logout })(Performance);
+const mapStateToProps = (state: RootState) => ({
+  role: state.auth.role,
+});
+
+export default connect(mapStateToProps, { logout })(Performance);

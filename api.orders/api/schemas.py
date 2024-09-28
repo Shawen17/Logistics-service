@@ -64,6 +64,9 @@ class ActivitySchema(Schema):
     EndTime = fields.DateTime(format="%Y-%m-%d %H:%M:%S", null=True)
     Duration = fields.Float()
     CheckedBy = fields.Int()
+    QAStart = fields.DateTime(format="%Y-%m-%d %H:%M:%S", null=True)
+    QAEnd = fields.DateTime(format="%Y-%m-%d %H:%M:%S", null=True)
+    QADuration = fields.Float()
 
     @pre_load
     def make_object(self, data, **kwargs):

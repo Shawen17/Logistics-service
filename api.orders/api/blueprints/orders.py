@@ -79,6 +79,7 @@ def post_update_order_status(current_user):
     try:
         order = order_schema.load(json_data)
         Orders.update(**order).where(Orders.OrderID == order["OrderID"]).execute()
+        
         if order["OrderStatus"] == "InProgress":
             Activity.create(
                 OrderID=order["OrderID"],
@@ -86,11 +87,13 @@ def post_update_order_status(current_user):
                 StartTime=datetime.now(pytz.timezone("US/Eastern")),
             )
         elif order["OrderStatus"] == "QA":
+            activity = Activity.get(Activity.OrderID == order["OrderID"])
             try:
-                activity = Activity.get(Activity.OrderID == order["OrderID"])
+                
                 if activity.StartTime:
                     Activity.update(
-                        EndTime=datetime.now(pytz.timezone("US/Eastern"))
+                        EndTime=datetime.now(pytz.timezone("US/Eastern")),
+                        QAStart=datetime.now(pytz.timezone("US/Eastern"))
                     ).where(Activity.OrderID == order["OrderID"]).execute()
 
                     Activity.update_end_time_and_duration(
@@ -111,9 +114,14 @@ def post_update_order_status(current_user):
                 & (Activity.Staff == current_user.get("CustomerID"))
             ).execute()
         elif order["OrderStatus"] in ["Cancelled", "Complete"]:
-            Activity.update(CheckedBy=current_user.get("CustomerID")).where(
+            activity = Activity.get(Activity.OrderID == order["OrderID"])
+            Activity.update(CheckedBy=current_user.get("CustomerID"),
+                QAEnd=datetime.now(pytz.timezone("US/Eastern"))).where(
                 Activity.OrderID == order["OrderID"]
             ).execute()
+            Activity.update_end_time_and_duration(
+                activity_id=activity.ActivityID
+            )
 
     except ValidationError as err:
         logger.error(f"Error in post_update_order_status: {err}")

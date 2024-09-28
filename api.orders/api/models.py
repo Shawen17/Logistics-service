@@ -154,6 +154,9 @@ class Activity(BaseModel):
     StartTime = DateTimeField()
     EndTime = DateTimeField(null=True)
     Duration = FloatField(null=True)
+    QAStart = DateTimeField(null=True)
+    QAEnd = DateTimeField(null=True)
+    QADuration= FloatField(null=True)
     CheckedBy = ForeignKeyField(
         Customer, backref="checked_activities", column_name="CheckedBy", null=True
     )
@@ -167,7 +170,7 @@ class Activity(BaseModel):
     @classmethod
     def update_end_time_and_duration(cls, activity_id):
         activity = cls.get(cls.ActivityID == activity_id)
-        if activity.StartTime:
+        if activity.StartTime and not activity.QAEnd:
             try:
                 duration_seconds = (
                     activity.EndTime - activity.StartTime
@@ -176,3 +179,9 @@ class Activity(BaseModel):
                 activity.save()
             except Exception as e:
                 logger.error(f"Update Duration encountered Error: {e}")
+        elif activity.QAEnd:
+            duration_seconds = (
+                    activity.QAEnd - activity.QAStart
+                ).total_seconds()
+            activity.QADuration = math.ceil(duration_seconds / 60.0)
+            activity.save()

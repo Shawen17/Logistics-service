@@ -1,15 +1,18 @@
 import { Activity } from '../interfaces';
 import React, { useState, useEffect } from 'react';
 import { StyledTable } from './ActivityTable.style';
+import { connect } from 'react-redux';
+import { RootState } from '../interfaces';
 
 interface ActivityTableProps {
   titles: string[];
   activities: Activity[];
 }
 
-const ActivityTable: React.FC<ActivityTableProps> = ({
+const ActivityTable: React.FC<ActivityTableProps & { role: string }> = ({
   titles,
   activities,
+  role,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -39,6 +42,13 @@ const ActivityTable: React.FC<ActivityTableProps> = ({
             </td>
             <td>{activity.Duration ? activity.Duration : 0}</td>
             <td>{activity.CheckedBy || 'N/A'}</td>
+            {role === 'manager' && (
+              <>
+                <td>{activity.QAStart}</td>
+                <td>{activity.QAEnd}</td>
+                <td>{activity.QADuration}</td>
+              </>
+            )}
           </tr>
         ))}
       </tbody>
@@ -46,4 +56,8 @@ const ActivityTable: React.FC<ActivityTableProps> = ({
   );
 };
 
-export default ActivityTable;
+const mapStateToProps = (state: RootState) => ({
+  role: state.auth.role,
+});
+
+export default connect(mapStateToProps, null)(ActivityTable);

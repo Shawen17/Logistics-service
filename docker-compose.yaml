@@ -64,7 +64,7 @@ services:
     restart: on-failure
     volumes:
       - ./db/data.sql:/docker-entrypoint-initdb.d/1.sql
-      - shawen_data:/var/lib/mysql
+      - all_data:/var/lib/mysql
       - ./order_data.csv:/var/lib/mysql/tmp/order_data.csv
     networks:
       - app_network
@@ -147,7 +147,7 @@ services:
 
 volumes:
   grafana-storage:
-  shawen_data:
+  all_data:
 
 networks:
   app_network:
