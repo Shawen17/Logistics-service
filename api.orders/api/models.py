@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import secrets
 from peewee import (
     Model,
     IntegerField,
@@ -12,11 +13,12 @@ from peewee import (
 )
 from playhouse.mysql_ext import MariaDBConnectorDatabase, JSONField
 import re
+import math
 from datetime import datetime
 import pytz
 from werkzeug.security import generate_password_hash, check_password_hash
 from logger import logger
-import math
+
 
 
 load_dotenv()
@@ -124,20 +126,32 @@ class Product(BaseModel):
 
 class Orders(BaseModel):
     OrderID = IntegerField(primary_key=True, null=False)
+    ref = CharField(50,null=True)
     OrderStatus = EnumField(ORDER_STATUSES_SET, null=False)
     Products = JSONField()
-    CustomerID = ForeignKeyField(
-        Customer, field="CustomerID", null=False, column_name="CustomerID"
-    )
+    CustomerID = CharField(50, null=True)
+    PhoneNumber = CharField(30, null=True)
+    Amount = FloatField(null=True)
     State = CharField(100, null=True)
     Address = CharField(150, null=True)
     OrderDate = CharField(
         default=datetime.now(pytz.timezone("US/Eastern")).strftime("%Y-%m-%d %H:%M:%S")
     )
     TreatedBy = CharField(150, null=True)
+    Fullfillment = BooleanField(default=False)
 
     class Meta:
         table_name = "Orders"
+
+    
+    def save(self, *args, **kwargs):
+        while not self.ref:
+            ref = secrets.token_urlsafe(16)
+            object_with_similar_ref = Orders.select().where(Orders.ref==ref)
+            if not object_with_similar_ref:
+                self.ref=ref
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"<Order(OrderID={self.OrderID}, OrderStatus={self.OrderStatus}, CustomerID={self.CustomerID})>"
@@ -185,3 +199,17 @@ class Activity(BaseModel):
                 ).total_seconds()
             activity.QADuration = math.ceil(duration_seconds / 60.0)
             activity.save()
+
+
+class Delivery(BaseModel):
+    DeliveryID = IntegerField(primary_key=True, null=False)
+    OrderID = ForeignKeyField(
+        Orders, backref="delivery", column_name="OrderID", null=False
+    )
+    DeliveredBy = ForeignKeyField(
+        Customer, backref='delivery',column_name='DeliveredBy',null=True
+    )
+    DeliveryDate = DateTimeField(null=True)
+
+    class Meta:
+        table_name = "Delivery"

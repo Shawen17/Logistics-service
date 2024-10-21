@@ -8,28 +8,30 @@ WORKDIR /webapp
 ENV PATH /webapp/node_modules/.bin:$PATH
 
 # Copy package.json and yarn.lock to the working directory
-COPY package.json ./
+COPY package.json yarn.lock ./
 
 # Install project dependencies
-RUN npm install --legacy-peer-deps
+RUN yarn install --legacy-peer-deps
 
 # Copy the entire project to the working directory
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN yarn build
+
+CMD ["yarn", "start"]
 
 # Second stage: Serve the React app with Nginx
-FROM nginx:1.15
+# FROM nginx:1.15
 
-# Copy custom Nginx configuration file
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# # Copy custom Nginx configuration file
+# COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy the build output to Nginx's html directory
-COPY --from=build-stage /webapp/build /usr/share/nginx/html
+# # Copy the build output to Nginx's html directory
+# COPY --from=build-stage /webapp/build /usr/share/nginx/html
 
-# Expose port 80
-EXPOSE 80
+# # Expose port 80
+# EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# # Start Nginx
+# CMD ["nginx", "-g", "daemon off;"]

@@ -19,6 +19,7 @@ const navItem: HeaderLink[] = [
   { label: 'Picker', url: '/picker' },
   { label: 'Logout', url: '/logout' },
   { label: 'Activity', url: '/activity' },
+  { label: 'Delivery', url: '/delivery' },
 ];
 
 const PageWrapper: React.FC<

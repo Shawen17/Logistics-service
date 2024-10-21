@@ -11,7 +11,8 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
     volumes:
-      - ./webapp:/webapp
+      - ./webapp/src:/codefiles/src
+      - webapp_data:/webapp/build
     environment:
       - CHOKIDAR_USEPOLLING=true
     networks:
@@ -41,6 +42,8 @@ services:
       - redis-cache
     volumes:
       - ./api.orders:/api.orders
+    env_file:
+      - ./.env
     environment:
       CHOKIDAR_USEPOLLING: true
       MYSQL_USER: ${MYSQL_USER}
@@ -48,6 +51,20 @@ services:
       MYSQL_HOST: mariadb
       MYSQL_PORT: 3306
       REDIS_HOST: ${REDIS_HOST}
+    networks:
+      - app_network
+
+  logistics-nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - webapp_data:/usr/share/nginx/html
+    ports:
+      - "8082:80"
+    depends_on:
+      - webapp
+      - api-orders
     networks:
       - app_network
 
@@ -148,7 +165,8 @@ services:
 volumes:
   grafana-storage:
   all_data:
+  webapp_data:
 
 networks:
   app_network:
-    driver: bridge
+    external: true

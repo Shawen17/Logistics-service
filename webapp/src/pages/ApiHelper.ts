@@ -7,6 +7,8 @@ const PRODUCT_URL = '/api/products/';
 const INPIPELINE_URL = '/api/orders/inpipeline';
 const UPDATE_STATUS_URL = '/api/orders/update_status';
 const ACTIVITY_URL = 'api/activities'
+const DELIVERY_URL='/api/orders/delivery'
+const DELIVERY_UPDATE_URL='/api/orders/delivery/update'
 const statusCode = [401,403,419]
 
 
@@ -162,6 +164,40 @@ const getInPipelineData = async () => {
 
 
 
+const getInDeliveryData = async () => {
+  let errorOccured = false;
+  let expired = false
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("access")}`,
+      Accept: "application/json",
+    },
+  };
+  
+  try {
+    const response = await axios.get(DELIVERY_URL,config);
+    if (response?.status === 200) {
+      var { data } = response.data;
+      
+    } else {
+      const { message } = response.data;
+      throw message;
+    }
+  } catch(err) {
+    if (axios.isAxiosError(err)) {
+      if(err.response){
+        expired = statusCode.includes(err.response.status)
+      }
+    console.error(err);
+    errorOccured = true;
+  }
+  }
+  return { data, errorOccured, expired };
+};
+
+
+
 const updateOrderStatus = async (order: Order, newOrderStatus: string, user:string) => {
     const updatedOrder = { ...order, OrderStatus: newOrderStatus, TreatedBy : user};
     let orderStatusUpdated = false;
@@ -185,8 +221,32 @@ const updateOrderStatus = async (order: Order, newOrderStatus: string, user:stri
     return orderStatusUpdated;
 };
 
+const updateDeliveryStatus = async (OrderID:number) => {
+  
+  let deliveryStatusUpdated = false;
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("access")}`,
+      Accept: "application/json",
+    },
+  };
+  const body = {OrderID}
+  try {
+      const response = await axios.put(DELIVERY_UPDATE_URL, body,config);
+      if (response?.status === 200) deliveryStatusUpdated = true;
+      else {
+          const { message } = response.data;
+          throw message;
+      }
+  } catch(err) {
+      console.error(err);
+  }
+  return deliveryStatusUpdated;
+};
 
 
 
 
-export { getInPipelineData, INPIPELINE_URL, updateOrderStatus, UPDATE_STATUS_URL, getAllProducts, PRODUCT_URL, pickerInpipelineOrder,getAllActivities };
+
+export { getInPipelineData, INPIPELINE_URL, updateOrderStatus, UPDATE_STATUS_URL, getAllProducts, PRODUCT_URL, pickerInpipelineOrder,getAllActivities,getInDeliveryData,updateDeliveryStatus };

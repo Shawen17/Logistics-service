@@ -29,7 +29,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
 
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000","http://localhost:3003","http://localhost:8083"]}})
 
 REQUEST_COUNT = Counter(
     "app_requests_total", "Total webapp request count", ["method", "endpoint"]

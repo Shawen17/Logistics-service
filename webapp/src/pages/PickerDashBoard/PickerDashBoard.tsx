@@ -1,18 +1,17 @@
-import OrderSheetPage from '../OrderSheetPage/OrderSheetPage';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
+import { useReactToPrint } from 'react-to-print';
+import { connect } from 'react-redux';
 import MovableItemList from '../../components/MovableItemList/MovableItemList';
 import { updateOrderStatus, pickerInpipelineOrder } from '../ApiHelper';
 import Spinner from '../../components/Spinner/Spinner';
 import PageWrapper from '../PageWrapper';
 import { Container } from '../KanbanBoard/KanbanBoard.styles';
 import { Order, PickerOrder } from '../../components/interfaces';
-import { connect } from 'react-redux';
 import { RootState, User } from '../../components/interfaces';
 import { logout } from '../../action/auth';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
-import { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
+import OrderSheetPage from '../OrderSheetPage/OrderSheetPage';
 
 export const DATA_STATES = {
   waiting: 'WAITING',
@@ -178,7 +177,13 @@ const PickerDashBoard: React.FC<PickerDashBoardProps & { logout: any }> = ({
         {orderSheetData.length > 0 ? (
           <>
             {orderSheetData.map((item) => (
-              <OrderSheetPage key={item.OrderID} item={item} />
+              <OrderSheetPage
+                key={item.OrderID}
+                item={item}
+                delivery={false}
+                refresh={null}
+                setRefresh={null}
+              />
             ))}
           </>
         ) : (

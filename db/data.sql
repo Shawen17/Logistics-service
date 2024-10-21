@@ -59,32 +59,34 @@ CREATE FULLTEXT INDEX idx_full_products ON Product (ProductName, ProductCategory
 
 CREATE TABLE `Orders` (
   `OrderID` int(11) NOT NULL AUTO_INCREMENT,
+  `ref` varchar(50) DEFAULT NULL,
   `OrderStatus` enum('Queued','InProgress','QA','Cancelled','Complete') NOT NULL,
   `Products` JSON NOT NULL,
-  `CustomerID` int(11) NOT NULL,
+  `CustomerID` varchar(255) NOT NULL,
   `State` varchar(255) NOT NULL,
   `Address` varchar(255) NOT NULL,
   `OrderDate` varchar(50) NOT NULL,
-  `TreatedBy` varchar(255) DEFAULT NULL,  
-  PRIMARY KEY (`OrderID`),
-  KEY `CustomerID` (`CustomerID`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`CustomerID`) REFERENCES `Customer` (`CustomerID`)
+  `PhoneNumber` varchar(25) DEFAULT NULL,
+  `Amount` FLOAT DEFAULT NULL,
+  `TreatedBy` varchar(255) DEFAULT NULL,
+  `Fullfillment` BOOLEAN DEFAULT FALSE,  
+  PRIMARY KEY (`OrderID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `Orders` WRITE;
 /*!40000 ALTER TABLE `Orders` DISABLE KEYS */;
 INSERT INTO `Orders` (`OrderID`, `OrderStatus`, `Products`, `CustomerID`, `State`, `Address`,`OrderDate`, `TreatedBy`) 
-VALUES (2,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 4, 3), 'quantities', JSON_ARRAY(2, 1, 1)),1,'Ontario','124 missi','2024-09-16 16:33:35',''),
-(3,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(4, 3), 'quantities', JSON_ARRAY(1, 1)),2,'Ontario','12, maddison','2024-09-10 16:33:35',''),
-(4,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 6), 'quantities', JSON_ARRAY(2, 1)),3,'Ontario','21, benfield','2024-09-16 12:46:23',''),
-(5,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(6, 1), 'quantities', JSON_ARRAY(3, 1)),3,'Ontario','34, Arkansas','2024-09-14 8:13:35',''),
-(6,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 5), 'quantities', JSON_ARRAY(1, 1)),4,'Ontario','32, Detriote','2024-09-09 18:20:35',''),
-(7,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 3)),1,'Ontario','30, London','2024-09-11 11:33:35',''),
-(8,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(3, 5), 'quantities', JSON_ARRAY(2, 2)),2,'Ontario','29, denver','2024-09-16 6:43:35',''),
-(9,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(5, 2), 'quantities', JSON_ARRAY(1, 3)),3,'Ontario','20, prodigy','2024-09-10 15:33:35',''),
-(10,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 7)),1,'Ontario','32, north york','2024-09-05 7:50:35',''),
-(11,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 3), 'quantities', JSON_ARRAY(1, 1)),2,'Ontario','12, bishop','2024-09-04 16:33:35','');
+VALUES (2,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 4, 3), 'quantities', JSON_ARRAY(2, 1, 1)),'good@gmail.com','Ontario','124 missi','2024-09-16 16:33:35',''),
+(3,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(4, 3), 'quantities', JSON_ARRAY(1, 1)),'good@gmail.com','Ontario','12, maddison','2024-09-10 16:33:35',''),
+(4,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 6), 'quantities', JSON_ARRAY(2, 1)),'good@gmail.com','Ontario','21, benfield','2024-09-16 12:46:23',''),
+(5,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(6, 1), 'quantities', JSON_ARRAY(3, 1)),'good@gmail.com','Ontario','34, Arkansas','2024-09-14 8:13:35',''),
+(6,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 5), 'quantities', JSON_ARRAY(1, 1)),'good@gmail.com','Ontario','32, Detriote','2024-09-09 18:20:35',''),
+(7,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 3)),'good@gmail.com','Ontario','30, London','2024-09-11 11:33:35',''),
+(8,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(3, 5), 'quantities', JSON_ARRAY(2, 2)),'good@gmail.com','Ontario','29, denver','2024-09-16 6:43:35',''),
+(9,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(5, 2), 'quantities', JSON_ARRAY(1, 3)),'good@gmail.com','Ontario','20, prodigy','2024-09-10 15:33:35',''),
+(10,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(2, 4), 'quantities', JSON_ARRAY(2, 7)),'good@gmail.com','Ontario','32, north york','2024-09-05 7:50:35',''),
+(11,'Queued', JSON_OBJECT('product_ids', JSON_ARRAY(1, 3), 'quantities', JSON_ARRAY(1, 1)),'good@gmail.com','Ontario','12, bishop','2024-09-04 16:33:35','');
 /*!40000 ALTER TABLE `Orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,6 +111,18 @@ CREATE TABLE `Activity` (
 
 
 ALTER TABLE Activity MODIFY StartTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+
+CREATE TABLE `Delivery` (
+  `DeliveryID` int(11) NOT NULL AUTO_INCREMENT,
+  `OrderID` int(11) NOT NULL,
+  `DeliveredBy` int(11) NULL,
+  `DeliveryDate` TIMESTAMP NULL,
+  PRIMARY KEY (`DeliveryID`),
+  FOREIGN KEY (`OrderID`) REFERENCES `Orders`(`OrderID`) ON DELETE CASCADE,
+  FOREIGN KEY (`DeliveredBy`) REFERENCES `Customer`(`CustomerID`) ON DELETE CASCADE
+)ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

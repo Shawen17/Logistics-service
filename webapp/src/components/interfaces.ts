@@ -1,5 +1,6 @@
 
 
+
 export interface Order {
     OrderID: number;
     CustomerID: number;
@@ -9,7 +10,8 @@ export interface Order {
     Products:{};
     State:string;
     TreatedBy:string;
-
+    OrderDate:string;
+    
 }
 
 export interface Activity {

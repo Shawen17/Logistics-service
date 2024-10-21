@@ -42,7 +42,6 @@ const Performance: React.FC<{ logout: any } & { role: string }> = ({
   const [staffInfo, setStaffInfo] = useState<User | {}>({});
   const [clicked, setClicked] = useState(false);
   const titles = role === 'manager' ? headerTitles : headerTitles.slice(0, -3);
-  console.log(titles);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;

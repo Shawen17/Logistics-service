@@ -39,3 +39,21 @@ export const H = styled.h3`
   font-weight: 400;
   font-style: italics;
 `;
+
+export const DeliveryButton = styled.button`
+  border: none;
+  border-radius: 10px;
+  height: 30px;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-family: 'Montserrat', 'sans-serif';
+  background-color: #50c878;
+  color: white;
+
+  &:hover {
+    background-color: teal;
+  }
+`;

@@ -10,15 +10,18 @@ class ProductStatusEnum(Enum):
 
 
 class OrderSchema(Schema):
-    OrderID = fields.Int()
+    OrderID = fields.Int(required=False,allow_none=True )
+    ref = fields.Str(required=False,allow_none=True)
     OrderStatus = fields.Str()
-    CustomerID = fields.Int()
+    CustomerID = fields.Str()
     Products = fields.Dict()
     State = fields.Str()
     Address = fields.Str()
     OrderDate = fields.Str()
-    TreatedBy = fields.Str()
-
+    TreatedBy = fields.Str(required=False, allow_none=True)
+    PhoneNumber = fields.Str(required=False,allow_none=True)
+    Amount = fields.Float(required=False,allow_none=True)
+    Fullfillment= fields.Boolean(required=False,allow_none=True)
     class Meta:
         unknown = EXCLUDE
 
@@ -67,6 +70,18 @@ class ActivitySchema(Schema):
     QAStart = fields.DateTime(format="%Y-%m-%d %H:%M:%S", null=True)
     QAEnd = fields.DateTime(format="%Y-%m-%d %H:%M:%S", null=True)
     QADuration = fields.Float()
+
+    @pre_load
+    def make_object(self, data, **kwargs):
+        return data
+
+
+class DeliverySchema(Schema):
+    DeliveryID = fields.Int(dump_only=True)
+    OrderID = fields.Int()
+    DeliveredBy = fields.Int(required=False, allow_none=True)
+    DeliveryDate = fields.DateTime(format="%Y-%m-%d %H:%M:%S", null=True,allow_none=True,required=False )
+    
 
     @pre_load
     def make_object(self, data, **kwargs):

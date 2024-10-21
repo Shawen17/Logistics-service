@@ -7,6 +7,7 @@ import Spinner from './components/Spinner/Spinner';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Logout from './components/Logout/Logout';
 
+const DeliveryPage = lazy(() => import('./pages/Delivery/DeliveryPage'));
 const Performance = lazy(() => import('./pages/Performance/Performance'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage/ProductsPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage/LoginPage'));
@@ -30,6 +31,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <KanbanBoard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/delivery"
+              element={
+                <ProtectedRoute>
+                  <DeliveryPage />
                 </ProtectedRoute>
               }
             />
