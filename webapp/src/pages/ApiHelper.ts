@@ -216,7 +216,13 @@ const updateOrderStatus = async (order: Order, newOrderStatus: string, user:stri
             throw message;
         }
     } catch(err) {
-        console.error(err);
+      if (axios.isAxiosError(err)) {
+        if(err.response){
+          console.error(err.message);
+        }
+      
+      
+    }
     }
     return orderStatusUpdated;
 };
