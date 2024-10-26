@@ -57,7 +57,7 @@ def token_required(f):
                     "message": "Something went wrong",
                     "data": None,
                     "error": str(e),
-                }, 500
+                }, 401
 
         if not current_user["Active"]:
             abort(403)
