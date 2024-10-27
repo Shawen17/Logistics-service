@@ -9,6 +9,7 @@ from logger import logger
 from api.auth_middleware import token_required
 
 
+
 orders_blueprint = Blueprint("orders_blueprint", __name__)
 
 
@@ -182,10 +183,12 @@ def get_user_orders():
     try:
         orders = Orders.select().where(Orders.CustomerID==email).dicts()
         orders_serialized = order_schema.dump(orders)
+        Products = [order['Products']['product_ids'] for order in orders_serialized ]
+        products = [item for sublist in Products for item in sublist]
     except Exception as err:
         logger.error(f"Error in user_orders: {err}")
         return {"data": [], "message": str(err)}, 500
-    return {"data": orders_serialized, "message": "Retrieval Successful"}, 200
+    return {"data": {"orders":orders_serialized,"products":products}, "message": "Retrieval Successful"}, 200
 
 
 
@@ -200,10 +203,8 @@ def get_delivery_orders(current_user):
             .where(
                 (Orders.Fullfillment == False) & (Orders.OrderStatus == "Complete"))
         )
-        print(orders)
-
         orders_serialized = order_schema.dump(orders)
-        print(orders_serialized)
+        
         return {"data": orders_serialized, "message": "Order retrieval successful"}, 200
     except Exception as err:
         logger.error(f"Error in get_delivery_orders: {err}")
